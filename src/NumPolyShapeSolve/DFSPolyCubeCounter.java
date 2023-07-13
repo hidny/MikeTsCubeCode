@@ -3,28 +3,40 @@ package NumPolyShapeSolve;
 
 import Coord.Coord3D;
 import SolutionResolver.SolutionResolverInterface;
+import SolutionResolver.StandardResolverForBig2DSolutions;
 import SolutionResolver.StandardResolverForSmall2DSolutions;
 import Utils.Utils;
 
 public class DFSPolyCubeCounter {
 
-	
-	public static final int NUM_ROTATIONS_2D_CHEAT= 4;
-	public static final int NUM_ROTATIONS_3D = 6;
 
+	public static final int NUM_ROTATIONS_3D = 24;
+	
+	public static final int NUM_NEIGHBOURS_3D= 6;
+	public static final int NUM_ROTATIONS_2D_CHEAT= 4;
+
+	
 	//TODO: switch it to 3D later:
 	public static final int NUM_ROTATIONS = NUM_ROTATIONS_2D_CHEAT;
 	
 	
-	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS;
+	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS_2D_CHEAT;
 	
 	public static final int BORDER_PADDING = 2;
 	
 	public static final int NOT_INSERTED = -1;
 	
+	public static Coord3D Coord3DSharedMem[][][]; 
+	
 	public static void solveCuboidIntersections(int N) {
 		
-		SolutionResolverInterface solutionResolver = new StandardResolverForSmall2DSolutions();
+		SolutionResolverInterface solutionResolver = null;
+		
+		if(N > 6 ) {
+			solutionResolver = new StandardResolverForSmall2DSolutions();
+		} else {
+			solutionResolver = new StandardResolverForBig2DSolutions();
+		}
 
 		Coord3D cubesToDevelop[] = new Coord3D[N];
 		for(int i=0; i<cubesToDevelop.length; i++) {
@@ -34,13 +46,16 @@ public class DFSPolyCubeCounter {
 		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
 	
 		boolean cubesUsed[][][] = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
-		int cubesOrdering[][][] = new int[GRID_SIZE][GRID_SIZE][GRID_SIZE];;
+		int cubesOrdering[][][] = new int[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+		Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+		
 
 		for(int i=0; i<cubesUsed.length; i++) {
 			for(int j=0; j<cubesUsed[1].length; j++) {
 				for(int k=0; k<cubesUsed[2].length; k++) {
 					cubesUsed[i][j][k] = false;
 					cubesOrdering[i][j][k] = NOT_INSERTED;
+					Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
 				}
 			}
 		}
@@ -59,7 +74,7 @@ public class DFSPolyCubeCounter {
 		
 		cubesUsed[START_I][START_J][START_K] = true;
 		cubesOrdering[START_I][START_J][START_K] = 0;
-		cubesToDevelop[numCellsUsedDepth] = new Coord3D(START_I, START_J, START_K);
+		cubesToDevelop[numCellsUsedDepth] = Coord3DSharedMem[START_I][START_J][START_K];
 		
 		numCellsUsedDepth += 1;
 		
@@ -88,7 +103,6 @@ public class DFSPolyCubeCounter {
 
 		if(numCellsUsedDepth == cubesToDevelop.length) {
 
-			System.out.println("Found possibly duplicated solution!");
 			long tmp = solutionResolver.resolveSolution(cubesToDevelop, cubesUsed);
 
 			return tmp;
@@ -152,7 +166,7 @@ public class DFSPolyCubeCounter {
 
 					//Setup for adding new cube:
 					cubesUsed[new_i][new_j][new_k] = true;
-					cubesToDevelop[numCellsUsedDepth] = new Coord3D(new_i, new_j, new_k);
+					cubesToDevelop[numCellsUsedDepth] = Coord3DSharedMem[new_i][new_j][new_k];
 					cubesOrdering[new_i][new_j][new_k] = numCellsUsedDepth;
 					//End setup
 
@@ -230,6 +244,139 @@ public class DFSPolyCubeCounter {
 
 		return cantAddCellBecauseOfOtherPaperNeighbours;
 	}
+	
+
+	//TODO: you need all 24 rotations! 
+	public static final int nugdeBasedOnRotationPlus2DRotation[][][] = 
+		{{{-1, 0,  1,  0,  0,  0},															  
+		  {0,  1,  0, -1,  0,  0},														  
+		  {0,  0,  0,  0,  1,  -1}},
+				
+		 {{0,  1,  0, -1,  0,  0},
+		  {1,  0, -1,  0,  0,  0},
+		  {0,  0,  0,  0,  1, -1}},
+		 
+		 {{1,  0, -1,  0,  0,  0},
+		  {0, -1,  0,  1,  0,  0},
+		  {0,  0,  0,  0,  1, -1}},
+		 
+		 {{0,  -1,  0,  1,  0,  0},
+		  {-1,  0,  1,  0,  0,  0},
+		  {0,   0,  0,  0,  1,  -1}}};
+	
+	//TODO: precalc this:
+	public static final int nugdeBasedOnRotationPlus3DRotation[][][] = {{{}}};
+	
+	//TODO: put in it's own Class
+	//TOOD: reread and test
+	public static boolean isFirstSightOfShape(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth) {
+
+
+		//TODO: Don't recalc this every time: (just keep track of it dynamically)
+		Coord3D cur;
+		
+		int arrayStandard[] = new int[numCellsUsedDepth - 1];
+
+		int num = 0;
+
+		for(int j=0; j<numCellsUsedDepth - 1; j++) {
+			cur = cubesToDevelop[0];
+			
+			int minIndexToUse = 0;
+			int minRotation = 0;
+
+			NEXT_CELL_INSERT:
+			for(int curOrderedIndexToUse=minIndexToUse; true; curOrderedIndexToUse++) {
+
+				int dirStart = 0;
+
+				if(curOrderedIndexToUse == minIndexToUse) {
+					dirStart = minRotation + 1;
+				}
+
+				//Try to attach a cell onto indexToUse using all 4 rotations:
+				for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
+					
+					
+					int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotation[0][dirNewCellAdd];
+					int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotation[1][dirNewCellAdd];
+					int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotation[2][dirNewCellAdd];
+					
+					if(cubesUsed[new_i][new_j][new_k]) {
+						arrayStandard[j] = num;
+						
+						minIndexToUse=curOrderedIndexToUse;
+						minRotation=dirNewCellAdd;
+						
+						continue NEXT_CELL_INSERT;
+					}
+					num++;
+				}
+			}
+		}
+		
+		//END TODO Don't recalc this every time
+		
+		for(int i=0; i<numCellsUsedDepth; i++) {
+
+			NEXT_ROTATION:
+			for(int r=0; r<NUM_ROTATIONS_2D_CHEAT; r++) {
+				
+				int startJ = 0;
+				if(i==0 && r == 0) {
+					continue;
+				}
+				cur = cubesToDevelop[i];
+				int minIndexToUse = 0;
+				int minRotation = 0;
+				num = 0;
+
+				
+				for(int j=startJ; j<numCellsUsedDepth-1; j++) {
+					
+					NEXT_CELL_INSERT:
+					for(int curOrderedIndexToUse=minIndexToUse; true; curOrderedIndexToUse++) {
+
+						int dirStart = 0;
+
+						if(curOrderedIndexToUse == minIndexToUse) {
+							dirStart = minRotation + 1;
+						}
+						
+						//Try to attach a cell onto indexToUse using all 4 rotations:
+						for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
+							
+							
+							//TODO: ahh! you need a new version of cubesToDevelop! This is all wrong!
+							//TODO: make it able to switch from 2D to 3D without needing to change the variable:
+							int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotationPlus2DRotation[r][0][dirNewCellAdd];
+							int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotationPlus2DRotation[r][1][dirNewCellAdd];
+							int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotationPlus2DRotation[r][2][dirNewCellAdd];
+							
+							if(cubesUsed[new_i][new_j][new_k]) {
+								
+								if(num < arrayStandard[j]) {
+									return false;
+								} else if(num > arrayStandard[j]) {
+									continue NEXT_ROTATION;
+								}
+								
+								minIndexToUse=curOrderedIndexToUse;
+								minRotation=dirNewCellAdd;
+								
+								continue NEXT_CELL_INSERT;
+							}
+							num++;
+						}
+					}
+					
+				}
+			}
+		}
+		
+		
+		return true;
+	}
 	 
 
 	public static void main(String args[]) {
@@ -241,7 +388,7 @@ public class DFSPolyCubeCounter {
 			//(Formerly M1425 N0561)
 		// I originally made it up to 4655.
 		//1, 1, 1, 2, 5, 12, 35, 108, 369, 1285, 4655, 17073, 63600, 238591, 901971, 3426576, 13079255,
-		solveCuboidIntersections(12);
+		solveCuboidIntersections(16);
 		
 		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
