@@ -388,7 +388,7 @@ public class DFSPolyCubeCounter {
 			//(Formerly M1425 N0561)
 		// I originally made it up to 4655.
 		//1, 1, 1, 2, 5, 12, 35, 108, 369, 1285, 4655, 17073, 63600, 238591, 901971, 3426576, 13079255,
-		solveCuboidIntersections(16);
+		solveCuboidIntersections(12);
 		
 		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());

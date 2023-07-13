@@ -6,7 +6,6 @@ import java.util.HashSet;
 import Coord.Coord3D;
 import Utils.Utils;
 
-//TODO: fix it!
 
 public class BasicUniqueCheckImproved2D {
 
@@ -16,8 +15,7 @@ public class BasicUniqueCheckImproved2D {
 	public static int CHECK_SYMMETRIES_ONE_DIM_FACTOR = 2;
 
 	public static int BIG_ENOUGH_NUMBER = 256;
-	
-	//TODO: make dynamic?
+
 	public static HashSet<BigInteger> uniqList = new HashSet<BigInteger>();
 	public static BigInteger debugLastScore = null;
 	
