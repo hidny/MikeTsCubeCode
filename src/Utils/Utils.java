@@ -23,7 +23,7 @@ public class Utils {
 		ret[4] = tmp.b;
 		ret[5] = tmp.c;
 		
-		for(int i=1; i<cuboidsInOrderToDevelop.length; i++) {
+		for(int i=1; cuboidsInOrderToDevelop[i] != null; i++) {
 			
 			tmp = cuboidsInOrderToDevelop[i];
 			

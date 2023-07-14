@@ -14,6 +14,7 @@ public class DFSPolyCubeCounter {
 	
 	public static final int NUM_NEIGHBOURS_3D= 6;
 	public static final int NUM_ROTATIONS_2D_CHEAT= 4;
+	public static final int NUM_ROTATIONS_2D = 4;
 
 	
 	//TODO: switch it to 3D later:
@@ -26,9 +27,12 @@ public class DFSPolyCubeCounter {
 	
 	public static final int NOT_INSERTED = -1;
 	
-	public static Coord3D Coord3DSharedMem[][][]; 
+	public static Coord3D Coord3DSharedMem[][][];
 	
 	public static void solveCuboidIntersections(int N) {
+		
+
+		generateAllTheNudges();
 		
 		SolutionResolverInterface solutionResolver = null;
 		
@@ -38,14 +42,20 @@ public class DFSPolyCubeCounter {
 			solutionResolver = new StandardResolverForBig2DSolutions();
 		}
 
-		Coord3D cubesToDevelop[] = new Coord3D[N];
+		//I decided to null terminate the arrays because I'm nostalgic towards my C programming days...
+		Coord3D cubesToDevelop[] = new Coord3D[N + 1];
+		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
+
 		for(int i=0; i<cubesToDevelop.length; i++) {
 			cubesToDevelop[i] = null;
+			cubesToDevelopInFirstFunction[i] = null;
 		}
 		
 		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
 	
 		boolean cubesUsed[][][] = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+		cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+		
 		int cubesOrdering[][][] = new int[GRID_SIZE][GRID_SIZE][GRID_SIZE];
 		Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
 		
@@ -56,6 +66,7 @@ public class DFSPolyCubeCounter {
 					cubesUsed[i][j][k] = false;
 					cubesOrdering[i][j][k] = NOT_INSERTED;
 					Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
+					cubesUsedInFirstFunction[i][j][k] = false;
 				}
 			}
 		}
@@ -91,7 +102,7 @@ public class DFSPolyCubeCounter {
 	}
 	
 	
-	public static final int nugdeBasedOnRotation[][] = {{-1, 0,  1,  0,  0,  0},
+	public static final int nudgeBasedOnRotation[][] = {{-1, 0,  1,  0,  0,  0},
 														{0,  1,  0, -1,  0,  0},
 														{0,  0,  0,  0,  1,  -1}};
 	public static long numIterations = 0;
@@ -101,7 +112,7 @@ public class DFSPolyCubeCounter {
 			boolean debugNope, long debugIterations[],
 			int cubesOrdering[][][], int minIndexToUse, int minRotationToUse) {
 
-		if(numCellsUsedDepth == cubesToDevelop.length) {
+		if(numCellsUsedDepth == cubesToDevelop.length - 1) {
 
 			long tmp = solutionResolver.resolveSolution(cubesToDevelop, cubesUsed);
 
@@ -129,7 +140,7 @@ public class DFSPolyCubeCounter {
 		long retDuplicateSolutions = 0L;
 		
 		//DEPTH-FIRST START:
-		for(int curOrderedIndexToUse=minIndexToUse; curOrderedIndexToUse<numCellsUsedDepth && curOrderedIndexToUse<cubesToDevelop.length && cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
+		for(int curOrderedIndexToUse=minIndexToUse; curOrderedIndexToUse<numCellsUsedDepth && cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
 			
 
 			//Try to attach a cell onto indexToUse using all 4 rotations:
@@ -141,9 +152,9 @@ public class DFSPolyCubeCounter {
 				}
 
 				
-				int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotation[0][dirNewCellAdd];
-				int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotation[1][dirNewCellAdd];
-				int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotation[2][dirNewCellAdd];
+				int new_i = cubesToDevelop[curOrderedIndexToUse].a + nudgeBasedOnRotation[0][dirNewCellAdd];
+				int new_j = cubesToDevelop[curOrderedIndexToUse].b + nudgeBasedOnRotation[1][dirNewCellAdd];
+				int new_k = cubesToDevelop[curOrderedIndexToUse].c + nudgeBasedOnRotation[2][dirNewCellAdd];
 
 				
 				if(cubesUsed[new_i][new_j][new_k]) {
@@ -245,36 +256,27 @@ public class DFSPolyCubeCounter {
 		return cantAddCellBecauseOfOtherPaperNeighbours;
 	}
 	
-
-	//TODO: you need all 24 rotations! 
-	public static final int nugdeBasedOnRotationPlus2DRotation[][][] = 
-		{{{-1, 0,  1,  0,  0,  0},															  
-		  {0,  1,  0, -1,  0,  0},														  
-		  {0,  0,  0,  0,  1,  -1}},
-				
-		 {{0,  1,  0, -1,  0,  0},
-		  {1,  0, -1,  0,  0,  0},
-		  {0,  0,  0,  0,  1, -1}},
-		 
-		 {{1,  0, -1,  0,  0,  0},
-		  {0, -1,  0,  1,  0,  0},
-		  {0,  0,  0,  0,  1, -1}},
-		 
-		 {{0,  -1,  0,  1,  0,  0},
-		  {-1,  0,  1,  0,  0,  0},
-		  {0,   0,  0,  0,  1,  -1}}};
 	
-	//TODO: precalc this:
-	public static final int nugdeBasedOnRotationPlus3DRotation[][][] = {{{}}};
+	//TODO: use these:
+	public static boolean cubesUsedInFirstFunction[][][];
+	public static Coord3D cubesToDevelopInFirstFunction[];
+	
+	public static void clearCubesUsedInFirstFunction(Coord3D cubesToDevelop[]) {
+		for(int i=0; cubesToDevelop[i] != null && i<cubesToDevelop.length; i++) {
+			cubesUsedInFirstFunction[cubesToDevelop[i].a][cubesToDevelop[i].b][cubesToDevelop[i].c] = false;
+		}
+	}
 	
 	//TODO: put in it's own Class
 	//TOOD: reread and test
+	//TODO: it's wrong!
 	public static boolean isFirstSightOfShape(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth) {
 
 
 		//TODO: Don't recalc this every time: (just keep track of it dynamically)
 		Coord3D cur;
 		
+		//TODO: You shouldn't use the keyword 'new' outside of the start of the algorithm.
 		int arrayStandard[] = new int[numCellsUsedDepth - 1];
 
 		int num = 0;
@@ -286,7 +288,7 @@ public class DFSPolyCubeCounter {
 			int minRotation = 0;
 
 			NEXT_CELL_INSERT:
-			for(int curOrderedIndexToUse=minIndexToUse; true; curOrderedIndexToUse++) {
+			for(int curOrderedIndexToUse=minIndexToUse; cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
 
 				int dirStart = 0;
 
@@ -298,9 +300,9 @@ public class DFSPolyCubeCounter {
 				for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
 					
 					
-					int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotation[0][dirNewCellAdd];
-					int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotation[1][dirNewCellAdd];
-					int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotation[2][dirNewCellAdd];
+					int new_i = cubesToDevelop[curOrderedIndexToUse].a + nudgeBasedOnRotation[0][dirNewCellAdd];
+					int new_j = cubesToDevelop[curOrderedIndexToUse].b + nudgeBasedOnRotation[1][dirNewCellAdd];
+					int new_k = cubesToDevelop[curOrderedIndexToUse].c + nudgeBasedOnRotation[2][dirNewCellAdd];
 					
 					if(cubesUsed[new_i][new_j][new_k]) {
 						arrayStandard[j] = num;
@@ -335,7 +337,7 @@ public class DFSPolyCubeCounter {
 				for(int j=startJ; j<numCellsUsedDepth-1; j++) {
 					
 					NEXT_CELL_INSERT:
-					for(int curOrderedIndexToUse=minIndexToUse; true; curOrderedIndexToUse++) {
+					for(int curOrderedIndexToUse=minIndexToUse; cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
 
 						int dirStart = 0;
 
@@ -343,15 +345,15 @@ public class DFSPolyCubeCounter {
 							dirStart = minRotation + 1;
 						}
 						
-						//Try to attach a cell onto indexToUse using all 4 rotations:
-						for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
+						//Try to attach a cell onto indexToUse using all 24 symmetries:
+						for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS_3D; dirNewCellAdd++) {
 							
 							
 							//TODO: ahh! you need a new version of cubesToDevelop! This is all wrong!
 							//TODO: make it able to switch from 2D to 3D without needing to change the variable:
-							int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotationPlus2DRotation[r][0][dirNewCellAdd];
-							int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotationPlus2DRotation[r][1][dirNewCellAdd];
-							int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotationPlus2DRotation[r][2][dirNewCellAdd];
+							int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotationAllStartingSymmetries[r][0][dirNewCellAdd];
+							int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotationAllStartingSymmetries[r][1][dirNewCellAdd];
+							int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotationAllStartingSymmetries[r][2][dirNewCellAdd];
 							
 							if(cubesUsed[new_i][new_j][new_k]) {
 								
@@ -377,9 +379,161 @@ public class DFSPolyCubeCounter {
 		
 		return true;
 	}
-	 
+	
+	public static int nugdeBasedOnRotationAllStartingSymmetries[][][];
+	public static int NUM_DIMS_3D = 3;
+	
+	public static void generateAllTheNudges() {
+		//For now, I'm doing 3D rotations but no 3D reflections.
+		/* I'm basing all 24 rotations off of the original neighbourNudge vectors:
+		 * public static final int nugdeBasedOnRotation[][] = {{-1, 0,  1,  0,  0,  0},
+														        {0,  1,  0, -1,  0,  0},
+														        {0,  0,  0,  0,  1,  -1}};
+		 */
+		
+		nugdeBasedOnRotationAllStartingSymmetries = new int[NUM_ROTATIONS_3D][NUM_DIMS_3D][NUM_NEIGHBOURS_3D];
+		
+		for(int i=0; i<NUM_NEIGHBOURS_3D; i++) {
+			for(int j=0; j<NUM_ROTATIONS_2D; j++) {
+				
+				int arrayToFill[][] = nugdeBasedOnRotationAllStartingSymmetries[NUM_ROTATIONS_2D * i + j];
+				
+				//Step 1:
+				//1st column is the 1st column of nugdeBasedOnRotation for the first 6 indexes,
+				// the 2nd column of nugdeBasedOnRotation for the next 6 indexes, and so on...
+				for(int k=0; k<NUM_DIMS_3D; k++) {
+					arrayToFill[k][0] = nudgeBasedOnRotation[k][i];
+				}
+				
+				//Step 2:
+				// 2nd column is jth next 90degree rotation from 1st column:
+				int firstColumn[] = getjthColumnVector(arrayToFill, 0);
+
+				int num90degreeVectorFoundBeforeCurrent = 0;
+				for(int m=i+1; true; m++) {
+					
+					int otherVectorToUse[] = getjthColumnVector(nudgeBasedOnRotation, m % NUM_NEIGHBOURS_3D);
+					
+					if(! isZeroVector(crossProd3D(firstColumn, otherVectorToUse))) {
+						
+						if(num90degreeVectorFoundBeforeCurrent == j) {
+							
+							for(int k=0; k<NUM_DIMS_3D; k++) {
+								arrayToFill[k][1] = otherVectorToUse[k];
+							}
+							
+							break;
+						}
+						
+						num90degreeVectorFoundBeforeCurrent++;
+					}
+				}
+				
+				
+				//Step 3:
+				// 3rd column is -(1st column)
+				
+				for(int k=0; k<NUM_DIMS_3D; k++) {
+					arrayToFill[k][2] = 0 - arrayToFill[k][0];
+				}
+				
+				//Step 4:
+				// 4th column is -(2nd column)
+				for(int k=0; k<NUM_DIMS_3D; k++) {
+					arrayToFill[k][3] = 0 - arrayToFill[k][1];
+				}
+				
+				//Step 5:
+				// 5th column is (1st column) x (2nd column) (cross-product)
+				// It turns out that I messed up and it's the negative of the cross-product..
+				int secondColumn[] = getjthColumnVector(arrayToFill, 1);
+				
+				int product[] = crossProd3D(firstColumn, secondColumn);
+				for(int k=0; k<NUM_DIMS_3D; k++) {
+					arrayToFill[k][4] = 0 - product[k];
+				}
+
+				//Step 6:
+				// 6th column is -(5th column) (cross-product)
+				for(int k=0; k<NUM_DIMS_3D; k++) {
+					arrayToFill[k][5] = 0 - nugdeBasedOnRotationAllStartingSymmetries[NUM_ROTATIONS_2D * i + j][k][4];
+				}
+			}
+		}
+		
+		testPrintAllTheNudges();
+		
+		//Sanity test:
+		for(int i=0; i<NUM_DIMS_3D; i++) {
+			for(int j=0; j<NUM_NEIGHBOURS_3D; j++) {
+				if(nugdeBasedOnRotationAllStartingSymmetries[0][i][j] != nudgeBasedOnRotation[i][j]) {
+					System.out.println("ERROR: nugdeBasedOnRotationAllStartingRotations didn't get the 1st symmetry (the null one) right");
+					System.exit(1);
+				}
+			}
+		}
+		
+	}
+	
+	public static boolean isZeroVector(int a[]) {
+		
+		for(int i=0; i<a.length; i++) {
+			if(a[i] != 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public static int[] getjthColumnVector(int array[][], int j) {
+		int ret[] = new int[array.length];
+		
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = array[i][j];
+		}
+		
+		return ret;
+	}
+	
+	public static int[] crossProd3D(int a[], int b[]) {
+		
+		int c[] = new int[NUM_DIMS_3D];
+		
+		
+		
+		for(int k=0; k<NUM_DIMS_3D; k++) {
+
+			int elements[] = new int[4];
+			int curIndex = 0;
+			
+			for(int i=0; i<NUM_DIMS_3D; i++) {
+				if(i == k) {
+					continue;
+				}
+				for(int j=0; j<2; j++) {
+					if(j == 0) {
+						elements[curIndex] = a[i];
+					} else {
+						elements[curIndex] = b[i];
+					}
+					curIndex++;
+				}
+			}
+
+			c[k] = elements[0] * elements[3] - elements[1] * elements[2];
+			
+			if(k == 1) {
+				c[k] *= -1; 
+			}
+		}
+		
+		return c;
+	}
 
 	public static void main(String args[]) {
+		
+		
 		System.out.println("Polycube counter program:");
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
@@ -395,4 +549,38 @@ public class DFSPolyCubeCounter {
 		
 	}
 	
+
+	public static void testPrintAllTheNudges() {
+
+		System.out.println("Printing all the nudges:");
+		
+		for(int i=0; i<NUM_ROTATIONS_3D; i++) {
+			
+			for(int j=0; j<NUM_DIMS_3D; j++) {
+				for(int k=0; k<NUM_NEIGHBOURS_3D; k++) {
+					if(nugdeBasedOnRotationAllStartingSymmetries[i][j][k] != -1) {
+						System.out.print(" ");
+					}
+					System.out.print(nugdeBasedOnRotationAllStartingSymmetries[i][j][k] + " ");
+				}
+				System.out.println();
+			}
+			System.out.println();
+		}
+		
+	}
+	public static void testPrintVector(int a[]) {
+		for(int i=0; i<a.length; i++) {
+			System.out.println(a[i]);
+		}
+	}
+	
+	public static void testVectorProd() {
+		int a[] = {1, 20, 3};
+		int b[] = {1, 5, 7};
+		
+		int c[] = crossProd3D(a, b);
+		testPrintVector(c);
+	}
+
 }
