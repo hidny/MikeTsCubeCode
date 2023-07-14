@@ -264,6 +264,7 @@ public class DFSPolyCubeCounter {
 	public static void clearCubesUsedInFirstFunction(Coord3D cubesToDevelop[]) {
 		for(int i=0; cubesToDevelop[i] != null && i<cubesToDevelop.length; i++) {
 			cubesUsedInFirstFunction[cubesToDevelop[i].a][cubesToDevelop[i].b][cubesToDevelop[i].c] = false;
+			cubesToDevelopInFirstFunction[i] = null;
 		}
 	}
 	
@@ -274,7 +275,6 @@ public class DFSPolyCubeCounter {
 
 
 		//TODO: Don't recalc this every time: (just keep track of it dynamically)
-		Coord3D cur;
 		
 		//TODO: You shouldn't use the keyword 'new' outside of the start of the algorithm.
 		int arrayStandard[] = new int[numCellsUsedDepth - 1];
@@ -282,7 +282,6 @@ public class DFSPolyCubeCounter {
 		int num = 0;
 
 		for(int j=0; j<numCellsUsedDepth - 1; j++) {
-			cur = cubesToDevelop[0];
 			
 			int minIndexToUse = 0;
 			int minRotation = 0;
@@ -322,59 +321,67 @@ public class DFSPolyCubeCounter {
 		for(int i=0; i<numCellsUsedDepth; i++) {
 
 			NEXT_ROTATION:
-			for(int r=0; r<NUM_ROTATIONS_2D_CHEAT; r++) {
+			for(int r=0; r<NUM_ROTATIONS_3D; r++) {
 				
-				int startJ = 0;
 				if(i==0 && r == 0) {
 					continue;
 				}
-				cur = cubesToDevelop[i];
+				
+				clearCubesUsedInFirstFunction(cubesToDevelop);
+				
+
 				int minIndexToUse = 0;
 				int minRotation = 0;
 				num = 0;
 
-				
-				for(int j=startJ; j<numCellsUsedDepth-1; j++) {
-					
-					NEXT_CELL_INSERT:
-					for(int curOrderedIndexToUse=minIndexToUse; cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
+				//TODO: Avoid var declaration within loop...
+				Coord3D cur = cubesToDevelop[i];
+				cubesToDevelopInFirstFunction[0] = cur;
+				cubesUsedInFirstFunction[cur.a][cur.b][cur.c] = true;
+				int numCellsInserted = 1;
 
-						int dirStart = 0;
+				//public static boolean cubesUsedInFirstFunction[][][];
+				//public static Coord3D cubesToDevelopInFirstFunction[];
+				NEXT_CELL_INSERT:
+				for(int curOrderedIndexToUse=minIndexToUse; cubesToDevelopInFirstFunction[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
 
-						if(curOrderedIndexToUse == minIndexToUse) {
-							dirStart = minRotation + 1;
-						}
-						
-						//Try to attach a cell onto indexToUse using all 24 symmetries:
-						for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS_3D; dirNewCellAdd++) {
-							
-							
-							//TODO: ahh! you need a new version of cubesToDevelop! This is all wrong!
-							//TODO: make it able to switch from 2D to 3D without needing to change the variable:
-							int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotationAllStartingSymmetries[r][0][dirNewCellAdd];
-							int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotationAllStartingSymmetries[r][1][dirNewCellAdd];
-							int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotationAllStartingSymmetries[r][2][dirNewCellAdd];
-							
-							if(cubesUsed[new_i][new_j][new_k]) {
-								
-								if(num < arrayStandard[j]) {
-									return false;
-								} else if(num > arrayStandard[j]) {
-									continue NEXT_ROTATION;
-								}
-								
-								minIndexToUse=curOrderedIndexToUse;
-								minRotation=dirNewCellAdd;
-								
-								continue NEXT_CELL_INSERT;
-							}
-							num++;
-						}
+					int dirStart = 0;
+
+					if(curOrderedIndexToUse == minIndexToUse) {
+						dirStart = minRotation + 1;
 					}
-					
+
+					//Try to attach a cell onto indexToUse using all 4 rotations:
+					for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
+						
+						int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotationAllStartingSymmetries[r][0][dirNewCellAdd];
+						int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotationAllStartingSymmetries[r][1][dirNewCellAdd];
+						int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotationAllStartingSymmetries[r][2][dirNewCellAdd];
+						
+						if(cubesUsed[new_i][new_j][new_k]) {
+							
+							
+							if(num < arrayStandard[numCellsInserted - 1]) {
+	                            return false;
+	                        } else if(num > arrayStandard[numCellsInserted - 1]) {
+	                            continue NEXT_ROTATION;
+	                        }
+	
+	                        minIndexToUse=curOrderedIndexToUse;
+	                        minRotation=dirNewCellAdd;
+							cubesUsedInFirstFunction[new_i][new_j][new_k] = true;
+							cubesToDevelopInFirstFunction[numCellsInserted] = Coord3DSharedMem[new_i][new_j][new_k];
+							numCellsInserted++;
+	
+							continue NEXT_CELL_INSERT;
+						}
+						num++;
+					}
 				}
-			}
-		}
+				
+				
+			} //END checking every symmetry
+		} // END checking every cubes added
 		
 		
 		return true;
