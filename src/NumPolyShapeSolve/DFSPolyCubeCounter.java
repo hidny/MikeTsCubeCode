@@ -358,7 +358,7 @@ public class DFSPolyCubeCounter {
 						int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotationAllStartingSymmetries[r][1][dirNewCellAdd];
 						int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotationAllStartingSymmetries[r][2][dirNewCellAdd];
 						
-						if(cubesUsed[new_i][new_j][new_k]) {
+						if(cubesUsedInFirstFunction[new_i][new_j][new_k]) {
 							
 							
 							if(num < arrayStandard[numCellsInserted - 1]) {
