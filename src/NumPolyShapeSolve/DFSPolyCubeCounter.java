@@ -620,7 +620,7 @@ public class DFSPolyCubeCounter {
 		
 		//N=13 and N=14 started at 12:50 AM
 		//N=13 ended at: 2:15:03 (85 minutes) (solutions: 138457022)
-		//N=14 ended at: 
+		//N=14 ended at: 12:32:03 PM (11 hours and 42 minutes) (Final number of unique solutions: 1039496297)
 		
 		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
