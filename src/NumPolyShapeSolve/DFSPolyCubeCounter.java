@@ -14,8 +14,7 @@ public class DFSPolyCubeCounter {
 	public static final int NUM_ROTATIONS_2D = 4;
 
 	
-	//TODO: make it so the user can choose between 2D and 3D (just change the var here)
-	//TODO: switch it to 3D later:
+	//TODO: make it so the user can choose between 2D and 3D (For now, just change the var here)
 	//public static final int NUM_NEIGHBOURS = NUM_ROTATIONS_2D_CHEAT;
 	public static final int NUM_NEIGHBOURS = NUM_NEIGHBOURS_3D;
 	
@@ -66,7 +65,7 @@ public class DFSPolyCubeCounter {
 		int START_K = GRID_SIZE/2;
 		
 		
-		//Once this reaches the total area, we're done!
+		//Once this reaches the value of N, we're done!
 		int numCellsUsedDepth = 0;
 
 		int START_INDEX = 0;
@@ -107,9 +106,9 @@ public class DFSPolyCubeCounter {
 
 		//System.out.println(numIterations);
 		
-		//Display debug/what's-going-on update
 		numIterations++;
-		
+
+		//Display debug/what's-going-on update:
 		if(numIterations % 10000L == 0) {
 			
 			System.out.println("Num iterations: " + numIterations);
@@ -129,7 +128,7 @@ public class DFSPolyCubeCounter {
 		for(int curOrderedIndexToUse=minIndexToUse; curOrderedIndexToUse<numCellsUsedDepth && cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
 			
 
-			//Try to attach a cell onto indexToUse using all 4 rotations:
+			//Try to attach a cell onto indexToUse using all rotations:
 			for(int dirNewCellAdd=0; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
 				
 				if(curOrderedIndexToUse == minIndexToUse
@@ -148,7 +147,7 @@ public class DFSPolyCubeCounter {
 					continue;
 				}
 				
-				boolean cantAddCellBecauseOfOtherPaperNeighbours = cantAddCellBecauseOfOtherPaperNeighbours(
+				boolean cantAddCellBecauseOfOtherNeighbours = cantAddCellBecauseOfOtherNeighbours(
 						cubesToDevelop, cubesUsed, numCellsUsedDepth,
 						debugNope, debugIterations,
 						cubesOrdering, curOrderedIndexToUse, dirNewCellAdd,
@@ -157,7 +156,7 @@ public class DFSPolyCubeCounter {
 					);
 				
 				
-				if( ! cantAddCellBecauseOfOtherPaperNeighbours) {
+				if( ! cantAddCellBecauseOfOtherNeighbours) {
 
 
 					//Setup for adding new cube:
@@ -201,13 +200,16 @@ public class DFSPolyCubeCounter {
 	
 	public static final int ONE_EIGHTY_ROTATION = 2;
 	
-	public static boolean cantAddCellBecauseOfOtherPaperNeighbours(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth,
+	//I'm enforcing an artificial constraint where the polycube shape
+	// has to develop in the same order as a breath-first-search.
+	// This has a lot of advantages that I will need to explain in some docs.
+	public static boolean cantAddCellBecauseOfOtherNeighbours(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth,
 			boolean debugNope, long debugIterations[],
 			int cubesOrdering[][][], int minIndexToUse, int minRotationToUse,
 			int curOrderedIndexToUse,
 			int new_i, int new_j, int new_k) {
 
-		boolean cantAddCellBecauseOfOtherPaperNeighbours = false;
+		boolean cantAddCellBecauseOfOtherNeighbours = false;
 		
 		int neighboursBasedOnRotation[][] = {{new_i-1,   new_j,     new_k},
 											 {new_i,   new_j+1,     new_k},
@@ -239,14 +241,14 @@ public class DFSPolyCubeCounter {
 				int orderOtherCell = cubesOrdering[i1][j1][k1];
 		
 				if(orderOtherCell < curOrderedIndexToUse ) {
-					cantAddCellBecauseOfOtherPaperNeighbours = true;
+					cantAddCellBecauseOfOtherNeighbours = true;
 					break;
 				}
 				
 			}
 		}
 
-		return cantAddCellBecauseOfOtherPaperNeighbours;
+		return cantAddCellBecauseOfOtherNeighbours;
 	}
 	
 	
@@ -286,7 +288,7 @@ public class DFSPolyCubeCounter {
 					dirStart = minRotation + 1;
 				}
 
-				//Try to attach a cell onto indexToUse using all 4 rotations:
+				//Try to attach a cube onto a neighbouring cube:
 				for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
 
 					num++;
@@ -385,7 +387,7 @@ public class DFSPolyCubeCounter {
 						dirStart = minRotation + 1;
 					}
 
-					//Try to attach a cell onto indexToUse using all 4 rotations:
+					//Try to attach a cube onto a neighbouring cube:
 					for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
 
 						num++;
@@ -609,7 +611,7 @@ public class DFSPolyCubeCounter {
 		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
-		int N = 14;
+		int N = 10;
 		solveCuboidIntersections(N);
 		
 		//So far, I think I could get f(14) in 10 hours...
@@ -617,7 +619,7 @@ public class DFSPolyCubeCounter {
 		// and f(17) 2 years... Not bad, but I think I can do better!
 		
 		//N=13 and N=14 started at 12:50 AM
-		//N=13 ended at: 
+		//N=13 ended at: 2:15:03 (85 minutes) (solutions: 138457022)
 		//N=14 ended at: 
 		
 		System.out.println("Done with N = " + N);
