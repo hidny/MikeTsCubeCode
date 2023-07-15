@@ -183,11 +183,13 @@ public class DFSPolyCubeCounter {
 
 					numCellsUsedDepth += 1;
 					
-					retDuplicateSolutions += doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
-							solutionResolver,
-							debugNope, debugIterations,
-							cubesOrdering, curOrderedIndexToUse, dirNewCellAdd
-						);
+					if(isFirstSightOfShape(cubesToDevelop, cubesUsed, numCellsUsedDepth)) {
+						retDuplicateSolutions += doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
+								solutionResolver,
+								debugNope, debugIterations,
+								cubesOrdering, curOrderedIndexToUse, dirNewCellAdd
+							);
+					}
 					
 					numCellsUsedDepth -= 1;
 
@@ -268,6 +270,21 @@ public class DFSPolyCubeCounter {
 		}
 	}
 	
+	public static int debugPrevOrder[] = new int[0];
+	public static void sanityComparePrevOrder(int cur[]) {
+		
+		for(int i=0; i<Math.min(debugPrevOrder.length, cur.length); i++) {
+			if(debugPrevOrder[i] > cur[i]) {
+				System.out.println("ERROR: the order is wrong!");
+				System.exit(1);
+			} else if(debugPrevOrder[i] < cur[i]) {
+				break;
+			}
+		}
+		
+		debugPrevOrder = cur;
+	}
+	
 	//TODO: put in it's own Class
 	//TOOD: reread and test
 	//TODO: it's wrong!
@@ -280,13 +297,13 @@ public class DFSPolyCubeCounter {
 		int arrayStandard[] = new int[numCellsUsedDepth - 1];
 
 		int num = 0;
+		
+		int minIndexToUse = 0;
+		int minRotation = -1;
 
+		NEXT_CELL_INSERT:
 		for(int j=0; j<numCellsUsedDepth - 1; j++) {
 			
-			int minIndexToUse = 0;
-			int minRotation = 0;
-
-			NEXT_CELL_INSERT:
 			for(int curOrderedIndexToUse=minIndexToUse; cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
 
 				int dirStart = 0;
@@ -297,7 +314,8 @@ public class DFSPolyCubeCounter {
 
 				//Try to attach a cell onto indexToUse using all 4 rotations:
 				for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
-					
+
+					num++;
 					
 					int new_i = cubesToDevelop[curOrderedIndexToUse].a + nudgeBasedOnRotation[0][dirNewCellAdd];
 					int new_j = cubesToDevelop[curOrderedIndexToUse].b + nudgeBasedOnRotation[1][dirNewCellAdd];
@@ -311,13 +329,33 @@ public class DFSPolyCubeCounter {
 						
 						continue NEXT_CELL_INSERT;
 					}
-					num++;
 				}
 			}
 		}
 		
+		/*System.out.println("Print order:");
+		//TODO: print output...
+		for(int i=0; i<arrayStandard.length; i++) {
+			if(i + 1 < arrayStandard.length) {
+				System.out.print(arrayStandard[i] + ", ");
+			} else {
+				System.out.print(arrayStandard[i]);
+			}
+		}
+		System.out.println();
+		
+		Utils.printCubes(cubesUsed, cubesToDevelop);
+		
+		System.out.println();
+		*/
+		sanityComparePrevOrder(arrayStandard);
+		
+		//TODO: sanity test that the order is always increasing!
+		
+		
 		//END TODO Don't recalc this every time
 		
+		/*
 		for(int i=0; i<numCellsUsedDepth; i++) {
 
 			NEXT_ROTATION:
@@ -362,7 +400,10 @@ public class DFSPolyCubeCounter {
 							
 							
 							if(num < arrayStandard[numCellsInserted - 1]) {
+								
+								clearCubesUsedInFirstFunction(cubesToDevelop);
 	                            return false;
+
 	                        } else if(num > arrayStandard[numCellsInserted - 1]) {
 	                            continue NEXT_ROTATION;
 	                        }
@@ -382,8 +423,9 @@ public class DFSPolyCubeCounter {
 				
 			} //END checking every symmetry
 		} // END checking every cubes added
-		
-		
+		*/
+
+		clearCubesUsedInFirstFunction(cubesToDevelop);
 		return true;
 	}
 	
@@ -549,7 +591,7 @@ public class DFSPolyCubeCounter {
 			//(Formerly M1425 N0561)
 		// I originally made it up to 4655.
 		//1, 1, 1, 2, 5, 12, 35, 108, 369, 1285, 4655, 17073, 63600, 238591, 901971, 3426576, 13079255,
-		solveCuboidIntersections(12);
+		solveCuboidIntersections(10);
 		
 		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
