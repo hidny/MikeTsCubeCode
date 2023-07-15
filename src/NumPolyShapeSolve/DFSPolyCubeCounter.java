@@ -2,9 +2,6 @@ package NumPolyShapeSolve;
 
 
 import Coord.Coord3D;
-import SolutionResolver.SolutionResolverInterface;
-import SolutionResolver.StandardResolverForBig2DSolutions;
-import SolutionResolver.StandardResolverForSmall2DSolutions;
 import Utils.Utils;
 
 public class DFSPolyCubeCounter {
@@ -34,13 +31,6 @@ public class DFSPolyCubeCounter {
 
 		generateAllTheNudges();
 		
-		SolutionResolverInterface solutionResolver = null;
-		
-		if(N > 6 ) {
-			solutionResolver = new StandardResolverForSmall2DSolutions();
-		} else {
-			solutionResolver = new StandardResolverForBig2DSolutions();
-		}
 
 		//I decided to null terminate the arrays because I'm nostalgic towards my C programming days...
 		Coord3D cubesToDevelop[] = new Coord3D[N + 1];
@@ -91,14 +81,18 @@ public class DFSPolyCubeCounter {
 		
 		long debugIterations[] = new long[N];
 	
-		doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth, solutionResolver,
+		long numSolutions = doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
 				false, debugIterations, cubesOrdering, START_INDEX, START_ROTATION);
 		
-		
+		System.out.println("-------------------");
+		System.out.println("-------------------");
+		System.out.println("-------------------");
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-		
-		System.out.println("Final number of unique solutions: " + solutionResolver.getNumUniqueFound());
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("Final number of unique solutions: " + numSolutions);
 	}
 	
 	
@@ -106,30 +100,23 @@ public class DFSPolyCubeCounter {
 														{0,  1,  0, -1,  0,  0},
 														{0,  0,  0,  0,  1,  -1}};
 	public static long numIterations = 0;
+	public static long numSolutionsSoFarDebug = 0L;
 	
 	public static long doDepthFirstSearch(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth,
-			SolutionResolverInterface solutionResolver,
 			boolean debugNope, long debugIterations[],
 			int cubesOrdering[][][], int minIndexToUse, int minRotationToUse) {
-
-		if(numCellsUsedDepth == cubesToDevelop.length - 1) {
-
-			long tmp = solutionResolver.resolveSolution(cubesToDevelop, cubesUsed);
-
-			return tmp;
-		}
 
 		//System.out.println(numIterations);
 		
 		//Display debug/what's-going-on update
 		numIterations++;
 		
-		if(numIterations % 100000000L == 0) {
+		if(numIterations % 10000L == 0) {
 			
 			System.out.println("Num iterations: " + numIterations);
-			Utils.printCubes(cubesUsed, cubesToDevelop);
+			Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
 			
-			System.out.println("Solutions: " + solutionResolver.getNumUniqueFound());
+			System.out.println("Solutions: " + numSolutionsSoFarDebug);
 			System.out.println();
 			
 			
@@ -164,7 +151,6 @@ public class DFSPolyCubeCounter {
 				
 				boolean cantAddCellBecauseOfOtherPaperNeighbours = cantAddCellBecauseOfOtherPaperNeighbours(
 						cubesToDevelop, cubesUsed, numCellsUsedDepth,
-						solutionResolver,
 						debugNope, debugIterations,
 						cubesOrdering, curOrderedIndexToUse, dirNewCellAdd,
 						curOrderedIndexToUse,
@@ -184,11 +170,18 @@ public class DFSPolyCubeCounter {
 					numCellsUsedDepth += 1;
 					
 					if(isFirstSightOfShape(cubesToDevelop, cubesUsed, numCellsUsedDepth)) {
-						retDuplicateSolutions += doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
-								solutionResolver,
-								debugNope, debugIterations,
-								cubesOrdering, curOrderedIndexToUse, dirNewCellAdd
-							);
+						
+						if(numCellsUsedDepth == cubesToDevelop.length - 1) {
+							
+							numSolutionsSoFarDebug++;
+							retDuplicateSolutions++;
+							
+						} else {
+							retDuplicateSolutions += doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
+									debugNope, debugIterations,
+									cubesOrdering, curOrderedIndexToUse, dirNewCellAdd
+								);
+						}
 					}
 					
 					numCellsUsedDepth -= 1;
@@ -210,7 +203,6 @@ public class DFSPolyCubeCounter {
 	public static final int ONE_EIGHTY_ROTATION = 2;
 	
 	public static boolean cantAddCellBecauseOfOtherPaperNeighbours(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth,
-			SolutionResolverInterface solutionResolver,
 			boolean debugNope, long debugIterations[],
 			int cubesOrdering[][][], int minIndexToUse, int minRotationToUse,
 			int curOrderedIndexToUse,
@@ -259,7 +251,6 @@ public class DFSPolyCubeCounter {
 	}
 	
 	
-	//TODO: use these:
 	public static boolean cubesUsedInFirstFunction[][][];
 	public static Coord3D cubesToDevelopInFirstFunction[];
 	
@@ -270,37 +261,21 @@ public class DFSPolyCubeCounter {
 		}
 	}
 	
-	public static int debugPrevOrder[] = new int[0];
-	public static void sanityComparePrevOrder(int cur[]) {
-		
-		for(int i=0; i<Math.min(debugPrevOrder.length, cur.length); i++) {
-			if(debugPrevOrder[i] > cur[i]) {
-				System.out.println("ERROR: the order is wrong!");
-				System.exit(1);
-			} else if(debugPrevOrder[i] < cur[i]) {
-				break;
-			}
-		}
-		
-		debugPrevOrder = cur;
-	}
-	
-	//TODO: put in it's own Class
-	//TOOD: reread and test
-	//TODO: it's wrong!
 	public static boolean isFirstSightOfShape(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth) {
-
 
 		//TODO: Don't recalc this every time: (just keep track of it dynamically)
 		
 		//TODO: You shouldn't use the keyword 'new' outside of the start of the algorithm.
-		int arrayStandard[] = new int[numCellsUsedDepth - 1];
+		int arrayStandard[] = new int[numCellsUsedDepth];
 
 		int num = 0;
 		
 		int minIndexToUse = 0;
 		int minRotation = -1;
 
+		cubesToDevelopInFirstFunction[0] = cubesToDevelop[0];
+		cubesUsedInFirstFunction[cubesToDevelopInFirstFunction[0].a][cubesToDevelopInFirstFunction[0].b][cubesToDevelopInFirstFunction[0].c] = true;
+		
 		NEXT_CELL_INSERT:
 		for(int j=0; j<numCellsUsedDepth - 1; j++) {
 			
@@ -321,11 +296,32 @@ public class DFSPolyCubeCounter {
 					int new_j = cubesToDevelop[curOrderedIndexToUse].b + nudgeBasedOnRotation[1][dirNewCellAdd];
 					int new_k = cubesToDevelop[curOrderedIndexToUse].c + nudgeBasedOnRotation[2][dirNewCellAdd];
 					
-					if(cubesUsed[new_i][new_j][new_k]) {
+					if(cubesUsed[new_i][new_j][new_k] && !cubesUsedInFirstFunction[new_i][new_j][new_k]) {
 						arrayStandard[j] = num;
 						
 						minIndexToUse=curOrderedIndexToUse;
 						minRotation=dirNewCellAdd;
+						
+						cubesUsedInFirstFunction[new_i][new_j][new_k] = true;
+						
+						//TEST
+						cubesToDevelopInFirstFunction[j+1] = Coord3DSharedMem[new_i][new_j][new_k];
+						
+						/*
+						//Sanity
+						if(cubesToDevelop[j + 1].a != new_i || cubesToDevelop[j + 1].b != new_j || cubesToDevelop[j + 1].c != new_k) {
+							
+							System.out.println("j + 1 = " + (j+1));
+							Utils.printCubesSingleDigitFirst10(cubesUsedInFirstFunction, cubesToDevelopInFirstFunction);
+							System.out.println("vs");
+							Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
+							System.out.println("DOH!");
+							System.exit(1);
+						} else {
+							//System.out.println("ok");
+						}
+						*/
+						//END TEST
 						
 						continue NEXT_CELL_INSERT;
 					}
@@ -333,8 +329,10 @@ public class DFSPolyCubeCounter {
 			}
 		}
 		
-		/*System.out.println("Print order:");
-		//TODO: print output...
+		
+		/*
+		//Testing:
+		System.out.println("Print order:");
 		for(int i=0; i<arrayStandard.length; i++) {
 			if(i + 1 < arrayStandard.length) {
 				System.out.print(arrayStandard[i] + ", ");
@@ -347,15 +345,14 @@ public class DFSPolyCubeCounter {
 		Utils.printCubes(cubesUsed, cubesToDevelop);
 		
 		System.out.println();
-		*/
 		sanityComparePrevOrder(arrayStandard);
 		
-		//TODO: sanity test that the order is always increasing!
+		*/
 		
 		
 		//END TODO Don't recalc this every time
 		
-		/*
+		
 		for(int i=0; i<numCellsUsedDepth; i++) {
 
 			NEXT_ROTATION:
@@ -368,18 +365,18 @@ public class DFSPolyCubeCounter {
 				clearCubesUsedInFirstFunction(cubesToDevelop);
 				
 
-				int minIndexToUse = 0;
-				int minRotation = 0;
+				minIndexToUse = 0;
+				minRotation = -1;
 				num = 0;
 
 				//TODO: Avoid var declaration within loop...
 				Coord3D cur = cubesToDevelop[i];
+
 				cubesToDevelopInFirstFunction[0] = cur;
 				cubesUsedInFirstFunction[cur.a][cur.b][cur.c] = true;
 				int numCellsInserted = 1;
 
-				//public static boolean cubesUsedInFirstFunction[][][];
-				//public static Coord3D cubesToDevelopInFirstFunction[];
+
 				NEXT_CELL_INSERT:
 				for(int curOrderedIndexToUse=minIndexToUse; cubesToDevelopInFirstFunction[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
 
@@ -391,40 +388,56 @@ public class DFSPolyCubeCounter {
 
 					//Try to attach a cell onto indexToUse using all 4 rotations:
 					for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
+
+						num++;
+
+						int new_i = cubesToDevelopInFirstFunction[curOrderedIndexToUse].a + nugdeBasedOnRotationAllStartingSymmetries[r][0][dirNewCellAdd];
+						int new_j = cubesToDevelopInFirstFunction[curOrderedIndexToUse].b + nugdeBasedOnRotationAllStartingSymmetries[r][1][dirNewCellAdd];
+						int new_k = cubesToDevelopInFirstFunction[curOrderedIndexToUse].c + nugdeBasedOnRotationAllStartingSymmetries[r][2][dirNewCellAdd];
 						
-						int new_i = cubesToDevelop[curOrderedIndexToUse].a + nugdeBasedOnRotationAllStartingSymmetries[r][0][dirNewCellAdd];
-						int new_j = cubesToDevelop[curOrderedIndexToUse].b + nugdeBasedOnRotationAllStartingSymmetries[r][1][dirNewCellAdd];
-						int new_k = cubesToDevelop[curOrderedIndexToUse].c + nugdeBasedOnRotationAllStartingSymmetries[r][2][dirNewCellAdd];
-						
-						if(cubesUsedInFirstFunction[new_i][new_j][new_k]) {
-							
+						if(cubesUsed[new_i][new_j][new_k] && !cubesUsedInFirstFunction[new_i][new_j][new_k]) {
 							
 							if(num < arrayStandard[numCellsInserted - 1]) {
 								
+	                            
+								//System.out.println("Not first sight!");
+								//Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
+								//System.out.println("vs");
+								//Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelopInFirstFunction);
+								//System.exit(1);
+
 								clearCubesUsedInFirstFunction(cubesToDevelop);
-	                            return false;
+								
+								return false;
 
 	                        } else if(num > arrayStandard[numCellsInserted - 1]) {
+	                        	//System.out.println("Nope!");
 	                            continue NEXT_ROTATION;
 	                        }
-	
 	                        minIndexToUse=curOrderedIndexToUse;
 	                        minRotation=dirNewCellAdd;
 							cubesUsedInFirstFunction[new_i][new_j][new_k] = true;
 							cubesToDevelopInFirstFunction[numCellsInserted] = Coord3DSharedMem[new_i][new_j][new_k];
 							numCellsInserted++;
 	
+							//System.out.println("Next loop!");
+							//Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelopInFirstFunction);
+							
+							curOrderedIndexToUse--;
 							continue NEXT_CELL_INSERT;
 						}
-						num++;
 					}
 				}
 				
 				
 			} //END checking every symmetry
 		} // END checking every cubes added
-		*/
+		
 
+
+		//System.out.println("First sight!");
+		//Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
+		
 		clearCubesUsedInFirstFunction(cubesToDevelop);
 		return true;
 	}
@@ -591,13 +604,28 @@ public class DFSPolyCubeCounter {
 			//(Formerly M1425 N0561)
 		// I originally made it up to 4655.
 		//1, 1, 1, 2, 5, 12, 35, 108, 369, 1285, 4655, 17073, 63600, 238591, 901971, 3426576, 13079255,
-		solveCuboidIntersections(10);
+		solveCuboidIntersections(16);
 		
 		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
 	}
+
 	
+	public static int debugPrevOrder[] = new int[0];
+	public static void sanityComparePrevOrder(int cur[]) {
+		
+		for(int i=0; i<Math.min(debugPrevOrder.length, cur.length); i++) {
+			if(debugPrevOrder[i] > cur[i]) {
+				System.out.println("ERROR: the order is wrong!");
+				System.exit(1);
+			} else if(debugPrevOrder[i] < cur[i]) {
+				break;
+			}
+		}
+		
+		debugPrevOrder = cur;
+	}
 
 	public static void testPrintAllTheNudges() {
 
@@ -616,6 +644,7 @@ public class DFSPolyCubeCounter {
 			}
 			System.out.println();
 		}
+		System.out.println("Done printing all the nudges.");
 		
 	}
 	public static void testPrintVector(int a[]) {
