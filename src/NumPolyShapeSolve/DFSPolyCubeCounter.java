@@ -14,11 +14,10 @@ public class DFSPolyCubeCounter {
 	public static final int NUM_ROTATIONS_2D = 4;
 
 	
+	//TODO: make it so the user can choose between 2D and 3D (just change the var here)
 	//TODO: switch it to 3D later:
-	public static final int NUM_ROTATIONS = NUM_ROTATIONS_2D_CHEAT;
-	
-	
-	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS_2D_CHEAT;
+	//public static final int NUM_NEIGHBOURS = NUM_ROTATIONS_2D_CHEAT;
+	public static final int NUM_NEIGHBOURS = NUM_NEIGHBOURS_3D;
 	
 	public static final int BORDER_PADDING = 2;
 	
@@ -131,7 +130,7 @@ public class DFSPolyCubeCounter {
 			
 
 			//Try to attach a cell onto indexToUse using all 4 rotations:
-			for(int dirNewCellAdd=0; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
+			for(int dirNewCellAdd=0; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
 				
 				if(curOrderedIndexToUse == minIndexToUse
 						&& dirNewCellAdd <  minRotationToUse) {
@@ -288,7 +287,7 @@ public class DFSPolyCubeCounter {
 				}
 
 				//Try to attach a cell onto indexToUse using all 4 rotations:
-				for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
+				for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
 
 					num++;
 					
@@ -387,7 +386,7 @@ public class DFSPolyCubeCounter {
 					}
 
 					//Try to attach a cell onto indexToUse using all 4 rotations:
-					for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_ROTATIONS; dirNewCellAdd++) {
+					for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
 
 						num++;
 
@@ -604,9 +603,24 @@ public class DFSPolyCubeCounter {
 			//(Formerly M1425 N0561)
 		// I originally made it up to 4655.
 		//1, 1, 1, 2, 5, 12, 35, 108, 369, 1285, 4655, 17073, 63600, 238591, 901971, 3426576, 13079255,
-		solveCuboidIntersections(16);
 		
+		//Confirmed that this program works with the 3D version: (I got it on the 1st try!)
+		//A000162		Number of 3-dimensional polyominoes (or polycubes) with n cells.
+		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
+		//(Formerly M1845 N0731)
+		//TODO: handle N=0 and N=1 case...
+		int N = 14;
+		solveCuboidIntersections(N);
 		
+		//So far, I think I could get f(14) in 10 hours...
+		//So, f(16) will probably take 2 months...
+		// and f(17) 2 years... Not bad, but I think I can do better!
+		
+		//N=13 and N=14 started at 12:50 AM
+		//N=13 ended at: 
+		//N=14 ended at: 
+		
+		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
 	}
