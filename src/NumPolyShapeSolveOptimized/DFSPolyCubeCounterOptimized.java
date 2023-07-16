@@ -1,10 +1,10 @@
-package NumPolyShapeSolve;
+package NumPolyShapeSolveOptimized;
 
 
 import Coord.Coord3D;
 import Utils.Utils;
 
-public class DFSPolyCubeCounter {
+public class DFSPolyCubeCounterOptimized {
 
 
 	public static final int NUM_ROTATIONS_3D = 24;
@@ -33,10 +33,15 @@ public class DFSPolyCubeCounter {
 		//I decided to null terminate the arrays because I'm nostalgic towards my C programming days...
 		Coord3D cubesToDevelop[] = new Coord3D[N + 1];
 		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
+		numIterationsByDepth = new long[N + 1];
+		lastIterationtoComputeNoGoForDepth = new long[N + 1];
 
 		for(int i=0; i<cubesToDevelop.length; i++) {
 			cubesToDevelop[i] = null;
 			cubesToDevelopInFirstFunction[i] = null;
+			
+			numIterationsByDepth[i] = 0L;
+			lastIterationtoComputeNoGoForDepth[i] = -1L;
 		}
 		
 		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
@@ -100,13 +105,16 @@ public class DFSPolyCubeCounter {
 	public static long numIterations = 0;
 	public static long numSolutionsSoFarDebug = 0L;
 	
+	public static long numIterationsByDepth[];
+	
+	public static long lastIterationtoComputeNoGoForDepth[];
+	
 	public static long doDepthFirstSearch(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth,
 			boolean debugNope, long debugIterations[],
 			int cubesOrdering[][][], int minIndexToUse, int minRotationToUse) {
 
 		//System.out.println(numIterations);
 		
-		numIterations++;
 
 		//Display debug/what's-going-on update:
 		if(numIterations % 10000L == 0) {
@@ -126,7 +134,7 @@ public class DFSPolyCubeCounter {
 		
 		//DEPTH-FIRST START:
 		for(int curOrderedIndexToUse=minIndexToUse; curOrderedIndexToUse<numCellsUsedDepth && cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
-			
+
 
 			//Try to attach a cell onto indexToUse using all rotations:
 			for(int dirNewCellAdd=0; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
@@ -158,7 +166,10 @@ public class DFSPolyCubeCounter {
 				
 				if( ! cantAddCellBecauseOfOtherNeighbours) {
 
+					numIterations++;
+					numIterationsByDepth[curOrderedIndexToUse] = numIterations;
 
+					
 					//Setup for adding new cube:
 					cubesUsed[new_i][new_j][new_k] = true;
 					cubesToDevelop[numCellsUsedDepth] = Coord3DSharedMem[new_i][new_j][new_k];
@@ -194,6 +205,7 @@ public class DFSPolyCubeCounter {
 				} // End recursive if cond
 			} // End loop rotation
 		} //End loop index
+		
 
 		return retDuplicateSolutions;
 	}
@@ -353,9 +365,19 @@ public class DFSPolyCubeCounter {
 		
 		//END TODO Don't recalc this every time
 		
-		
+		boolean numIterationsByDepthInverted = false;
 		for(int i=0; i<numCellsUsedDepth; i++) {
+			
+			if(! numIterationsByDepthInverted &&
+					numIterationsByDepth[i] == lastIterationtoComputeNoGoForDepth[i]) {
+				//System.out.println("SKIP!");
+				continue;
+			} else if(i > 0 && numIterationsByDepth[i] < numIterationsByDepth[i+1]) {
+				numIterationsByDepthInverted = true;
+			}
 
+			boolean searchGoesPast1stCell = false;
+	
 			NEXT_ROTATION:
 			for(int r=0; r<NUM_ROTATIONS_3D; r++) {
 				
@@ -385,6 +407,8 @@ public class DFSPolyCubeCounter {
 
 					if(curOrderedIndexToUse == minIndexToUse) {
 						dirStart = minRotation + 1;
+					} else {
+						searchGoesPast1stCell = true;
 					}
 
 					//Try to attach a cube onto a neighbouring cube:
@@ -432,6 +456,11 @@ public class DFSPolyCubeCounter {
 				
 				
 			} //END checking every symmetry
+			
+			if(searchGoesPast1stCell == false) {
+				lastIterationtoComputeNoGoForDepth[i] = numIterations;
+			}
+
 		} // END checking every cubes added
 		
 
@@ -611,7 +640,7 @@ public class DFSPolyCubeCounter {
 		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
-		int N = 10;
+		int N = 8;
 		solveCuboidIntersections(N);
 		
 		//So far, I think I could get f(14) in 10 hours...
@@ -621,9 +650,7 @@ public class DFSPolyCubeCounter {
 		//N=13 and N=14 started at 12:50 AM
 		//N=13 ended at: 2:15:03 (85 minutes) (solutions: 138457022)
 		//N=14 ended at: 12:32:03 PM (11 hours and 42 minutes) (Final number of unique solutions: 1039496297)
-		//N=15 started at Jul 15, 2:40AM and ended at: 
 		
-		//If you want to see faster code that's harder to understand, see the latest in the src/NumPolyShapeSolveOptimized folder.
 		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
