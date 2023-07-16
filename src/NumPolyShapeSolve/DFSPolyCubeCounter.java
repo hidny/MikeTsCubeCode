@@ -611,7 +611,7 @@ public class DFSPolyCubeCounter {
 		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
-		int N = 10;
+		int N = 14;
 		solveCuboidIntersections(N);
 		
 		//So far, I think I could get f(14) in 10 hours...
@@ -619,7 +619,7 @@ public class DFSPolyCubeCounter {
 		// and f(17) 2 years... Not bad, but I think I can do better!
 		
 		//N=13 and N=14 started at 12:50 AM
-		//N=13 ended at: 2:15:03 (85 minutes) (solutions: 138457022)
+		//N=13 ended at: 2:15:03 (85 minutes)
 		//N=14 ended at: 12:32:03 PM (11 hours and 42 minutes) (Final number of unique solutions: 1039496297)
 		//N=15 started at Jul 15, 2:40AM and ended at: 
 		

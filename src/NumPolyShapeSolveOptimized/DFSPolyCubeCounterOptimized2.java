@@ -781,7 +781,7 @@ public class DFSPolyCubeCounterOptimized2 {
 		// and f(17) 2 years... Not bad, but I think I can do better!
 		
 		//N=13 and N=14 started at 12:50 AM
-		//N=13 ended at: 2:15:03 (85 minutes) (solutions: 138457022)
+		//N=13 ended at: 2:15:03 (85 minutes)
 		//N=14 ended at: 12:32:03 PM (11 hours and 42 minutes) (Final number of unique solutions: 1039496297)
 		
 		//Update Optimized2 is over twice as fast!
