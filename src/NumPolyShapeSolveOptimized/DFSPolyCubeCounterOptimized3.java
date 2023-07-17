@@ -275,7 +275,7 @@ public class DFSPolyCubeCounterOptimized3 {
 	}
 	
 	public static boolean isFirstSightOfShape(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth, int currentPolycubePerformance[]) {
-
+		
 		int minIndexToUse = 0;
 		int minRotation = -1;
 		int num = 0;
@@ -292,10 +292,10 @@ public class DFSPolyCubeCounterOptimized3 {
 				listOfRotations = startRotationsToConsiderFor3D[indexRootNeighbours][indexNodeNeighbours];
 				
 				if(listOfRotations == null) {
-					clearCubesUsedInFirstFunction(cubesToDevelop);
 					return false;
-					//continue;
 				}
+				
+				
 			}
 
 			NEXT_ROTATION:
@@ -307,9 +307,7 @@ public class DFSPolyCubeCounterOptimized3 {
 					continue;
 				}
 				
-				clearCubesUsedInFirstFunction(cubesToDevelop);
 				
-
 				minIndexToUse = 0;
 				minRotation = -1;
 				num = 0;
@@ -319,6 +317,8 @@ public class DFSPolyCubeCounterOptimized3 {
 
 				cubesToDevelopInFirstFunction[0] = cur;
 				cubesUsedInFirstFunction[cur.a][cur.b][cur.c] = true;
+
+				
 				int numCellsInserted = 1;
 
 
@@ -351,12 +351,13 @@ public class DFSPolyCubeCounterOptimized3 {
 								//Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelopInFirstFunction);
 								//System.exit(1);
 
-								clearCubesUsedInFirstFunction(cubesToDevelop);
+								clearCubesUsedInFirstFunction(cubesToDevelopInFirstFunction);
 								
 								return false;
 
 	                        } else if(num > currentPolycubePerformance[numCellsInserted - 1]) {
 	                        	//System.out.println("Nope!");
+	                        	clearCubesUsedInFirstFunction(cubesToDevelopInFirstFunction);
 	                            continue NEXT_ROTATION;
 	                        }
 	                        minIndexToUse=curOrderedIndexToUse;
@@ -374,6 +375,7 @@ public class DFSPolyCubeCounterOptimized3 {
 					}
 				}
 				
+				clearCubesUsedInFirstFunction(cubesToDevelopInFirstFunction);
 				
 			} //END checking every symmetry
 		} // END checking every cubes added
@@ -383,7 +385,6 @@ public class DFSPolyCubeCounterOptimized3 {
 		//System.out.println("First sight!");
 		//Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
 		
-		clearCubesUsedInFirstFunction(cubesToDevelop);
 		return true;
 	}
 	
@@ -696,7 +697,7 @@ public class DFSPolyCubeCounterOptimized3 {
 		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
-		int N = 13;
+		int N = 12;
 		solveCuboidIntersections(N);
 		
 		//So far, I think I could get f(14) in 10 hours...
@@ -711,6 +712,9 @@ public class DFSPolyCubeCounterOptimized3 {
 		// N=12 took less than 3.5 minutes (It took over 10 minutes before)
 		// N=13 started at 3:41:54 AM and ended at 4:09:49 AM (It took about 28 minutes vs the 85 minutes it took when I ran unoptimized)
 		// It also got the right answer: "Final number of unique solutions: 138462649"
+		
+		//Update for Optimized3:
+		// N=13: start: 3:58:50 PM end: 4:31:32 PM (It took less than 33 minutes) Worse than Optimized2?
 		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
