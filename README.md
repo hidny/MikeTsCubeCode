@@ -5,7 +5,7 @@
   
 ## Purpose of program  
   
-* Find the number of distinct polycube shapes with the number of cube equal to 17, and then take it further.
+* Find the number of distinct polycube shapes with the number of cubes equal to 17, and then take it further.
   
 ## Plan:  
   
@@ -68,8 +68,8 @@ Theorem:
 * Note that for the base-case of N=1 or 2, there's only 1 answer to work with anyways.  
   
 Follow these step:  
-*Start with any race winner for for a polycube size N+1  
-*Remove the last cube (Cend) it used from the polycube (and from the breadth-first-search path it took)  
+* Start with any race winner for for a polycube size N+1  
+* Remove the last cube (Cend) it used from the polycube (and from the breadth-first-search path it took)  
   
   
 ** Notice that the new path pw is also the race winner for the smaller polycube shape because  
@@ -86,23 +86,21 @@ to
 2) Disappear because it started with the cube Ce  
 3) Speed up slightly because cube Ce was the last cube.  
   
-Because the new path pw is obviously case 3, and if there were another path in case 3, (because of the way the race is conducted, pw would still be the race winner.  
+Because the new path pw is obviously case 3, and if there were another path in case 3, (because of the way the race is conducted), pw would still be the race winner.  
   
-Therefore, the theorem is true and you could throw away paths that lose the race for polycubes of size n without missing any solutions of size n+1.  
-  
-  
+Therefore, the theorem is true and you could throw away paths that lose the race for polycubes of size n without missing any solutions of size n+1.
   
   
 ## Lower level explanation of code:  
   
-* Tried to reduce memory allocations  
+* Tried to reduce memory allocations by having pretty much all the memory declared at the start of the program.
 * Decided to be 'wasteful' with space usage by using a bool array that is N^3 in size instead of using a hashset because that meant not constantly allocating memory..  
-** N^3 bits for N=40 is only 32000 bits...  
+	* N^3 bits for N=40 is only 32000 bits...  
 * Relevant code may be complicated, but it's only around 800 lines.  
-* I tried to reduce branching by suggesting that the compiler go arithmetic in the getNeighbourIndex() function and I think the compiler actually understood!  
+* I tried to reduce branching by suggesting that the compiler do arithmetic instead of branching in the getNeighbourIndex() function and I think the compiler actually understood!  
 * Probably could be rewritten in C or assembly for better results. If I were interested in writing C or assembly for optimizations, this would be what I would work on.
 
-*It got better results when it was ported to Rust. See Loïc Damien's code: https://gitlab.com/dzamlo/polycubes  
+* It got better results when it was ported to Rust. See Loïc Damien's code: https://gitlab.com/dzamlo/polycubes  
 * I didn't use a profiler, and I just used my intuition. I wouldn't be surprised if an expert can do much better.  
   
 * Tricks to precompute a few things:  
