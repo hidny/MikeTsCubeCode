@@ -108,10 +108,10 @@ Therefore, the theorem is true and you could throw away paths that lose the race
 ** Precomputed a look-up table for the relevant contenders during the 'race'.  
   
   
-## Appendix A: A(n) less than c*(6^6)^n
+## Appendix A: A(n) less than c*( 6^6 )^n
 
 There's basically a counting argument based on the way the path is constructed.
 The formula way overshoots the real value because it oversimplifies, but it works.
 I'll explain it later.
 
-For a dimension d, the argument changes to: c*((2d)^(2d))^n
+For a dimension d, the result changes to: c*((2d)^ (2d))^n
