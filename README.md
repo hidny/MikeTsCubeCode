@@ -37,7 +37,7 @@ Instead, it develops the polycubes in a recursive way while making sure the orde
 Once it finds a polycube shape of the desired size, it runs a function that does a 'race' to figure out if the cube and rotation we're using as a starting point for the polycube results is the 'first' time the polycube would be explored by the simple breadth-first-search algorithm. That may sound impossible, but if you only develop the polycubes in a systematic order that covers all the shapes, and not randomly, there's 'only' 24*N different competitors every time you run the 'race'. (24 is the # of symmetries in 3D and N is the number of cubes that could act as a starting point.)  
   
 The space usage is small because it doesn't hold previous configs. It's only O(n^3). It could even be lower if I really wanted it to be, but space isn't the issue.  
-Unfortunately, the time taken is still exponential, and it's not even a 'nice' exponential (see Appendix A).  
+Unfortunately, the time taken is still exponential See Appendix A for a generous upper-bound.  
   
 The time it takes is something like O( A(n) * n^2 * log(n) )  
 where 'A(n)' is the number of answers as a function of n  
@@ -108,19 +108,10 @@ Therefore, the theorem is true and you could throw away paths that lose the race
 ** Precomputed a look-up table for the relevant contenders during the 'race'.  
   
   
-## Appendix A: A(n) is greater than a 'nice' exponential: (rough sketch)  
-  
-Proof by contradiction:  
-  
-Suppose A(n) < c * b^n for some constants b and c and for all n > n0  
-  
-Now make a 'table' with b+2 legs and O(b) cubes for the table part.  
-  
-If you only extend the shape by adding to the legs, you will have b+2 options every time you want to add a cube.  
-Therefore, A(n) > c2 * (b+2) ^n for some constant c and for all n > n0  
-  
-But because c2 * (b+2) ^n > c * b^n for all n > n0 (for some n0), we have a contradiction.  
-Therefore, A(n) can't be contained by a simple exponential.  
-Therefore, A(n) > c * b^n for constants b and c for all n > n0  
-  
-Note that we could also make the 'table' 2D, so this proof also works in 2D.
+## Appendix A: A(n) less than c*(6^6)^n
+
+There's basically a counting argument based on the way the path is constructed.
+The formula way overshoots the real value because it oversimplifies, but it works.
+I'll explain it later.
+
+For a dimension d, the argument changes to: c*((2d)^(2d))^n
