@@ -7,6 +7,10 @@ import java.util.HashMap;
 import Coord.Coord3D;
 import Utils.Utils;
 
+//TODO: I completely broke these dynamic vars:
+// curPathArray
+// curNum
+//TODO: fix it!
 public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 
 
@@ -289,7 +293,8 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 							if( targetTaskIndex == curNumPiecesCreated) {
 								
 								ComputeTaskDescription ret = new ComputeTaskDescription(cubesToDevelop, cubesUsed, numCellsUsedDepth,
-										debugNope, debugIterations, cubesOrdering, minIndexToUse, minRotationToUse,
+										debugNope, debugIterations,
+										cubesOrdering, curOrderedIndexToUse, dirNewCellAdd + 1,
 										curPathArray, curNum);
 								
 								System.out.println("---");
