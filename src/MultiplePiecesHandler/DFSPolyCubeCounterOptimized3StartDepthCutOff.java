@@ -1,10 +1,15 @@
-package NumPolyShapeSolveOptimized;
+package MultiplePiecesHandler;
 
+
+import java.util.ArrayList;
 
 import Coord.Coord3D;
 import Utils.Utils;
 
-public class DFSPolyCubeCounterOptimized {
+//TODO: put the features of DFSPolyCubeComputeTaskGetter here.
+//TODO: Also, return the ComputeTaskDescription
+
+public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 
 
 	public static final int NUM_ROTATIONS_3D = 24;
@@ -24,33 +29,24 @@ public class DFSPolyCubeCounterOptimized {
 	
 	public static Coord3D Coord3DSharedMem[][][];
 	
-	public static void solveCuboidIntersections(int N) {
+	public static void enumerateNumberOfPolycubes(int N) {
 		
-
-		generateAllTheNudges();
-		
+		initializePrecomputedVars(N);
 
 		//I decided to null terminate the arrays because I'm nostalgic towards my C programming days...
 		Coord3D cubesToDevelop[] = new Coord3D[N + 1];
 		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
-		numIterationsByDepth = new long[N + 1];
-		lastIterationtoComputeNoGoForDepth = new long[N + 1];
 
 		for(int i=0; i<cubesToDevelop.length; i++) {
 			cubesToDevelop[i] = null;
 			cubesToDevelopInFirstFunction[i] = null;
-			
-			numIterationsByDepth[i] = 0L;
-			lastIterationtoComputeNoGoForDepth[i] = -1L;
 		}
 		
 		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
 	
 		boolean cubesUsed[][][] = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
-		cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
 		
 		int cubesOrdering[][][] = new int[GRID_SIZE][GRID_SIZE][GRID_SIZE];
-		Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
 		
 
 		for(int i=0; i<cubesUsed.length; i++) {
@@ -58,8 +54,6 @@ public class DFSPolyCubeCounterOptimized {
 				for(int k=0; k<cubesUsed[2].length; k++) {
 					cubesUsed[i][j][k] = false;
 					cubesOrdering[i][j][k] = NOT_INSERTED;
-					Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
-					cubesUsedInFirstFunction[i][j][k] = false;
 				}
 			}
 		}
@@ -83,9 +77,12 @@ public class DFSPolyCubeCounterOptimized {
 		numCellsUsedDepth += 1;
 		
 		long debugIterations[] = new long[N];
+		
+		int curPathArray[] = new int[N+1];
+		int curNum = 0;
 	
 		long numSolutions = doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
-				false, debugIterations, cubesOrdering, START_INDEX, START_ROTATION);
+				false, debugIterations, cubesOrdering, START_INDEX, START_ROTATION, curPathArray, curNum);
 		
 		System.out.println("-------------------");
 		System.out.println("-------------------");
@@ -98,6 +95,36 @@ public class DFSPolyCubeCounterOptimized {
 		System.out.println("Final number of unique solutions: " + numSolutions);
 	}
 	
+	public static void initializePrecomputedVars(int N) {
+
+		generateAllTheNudges();
+		
+		generateStartRotationsRuleOfThump3D();
+		
+		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
+
+		for(int i=0; i<cubesToDevelopInFirstFunction.length; i++) {
+			cubesToDevelopInFirstFunction[i] = null;
+		}
+		
+		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
+	
+		cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+		
+		Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+		
+
+		for(int i=0; i<Coord3DSharedMem.length; i++) {
+			for(int j=0; j<Coord3DSharedMem[1].length; j++) {
+				for(int k=0; k<Coord3DSharedMem[2].length; k++) {
+					Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
+					cubesUsedInFirstFunction[i][j][k] = false;
+				}
+			}
+		}
+
+	}
+	
 	
 	public static final int nudgeBasedOnRotation[][] = {{-1, 0,  1,  0,  0,  0},
 														{0,  1,  0, -1,  0,  0},
@@ -105,19 +132,16 @@ public class DFSPolyCubeCounterOptimized {
 	public static long numIterations = 0;
 	public static long numSolutionsSoFarDebug = 0L;
 	
-	public static long numIterationsByDepth[];
-	
-	public static long lastIterationtoComputeNoGoForDepth[];
-	
 	public static long doDepthFirstSearch(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth,
 			boolean debugNope, long debugIterations[],
-			int cubesOrdering[][][], int minIndexToUse, int minRotationToUse) {
-
+			int cubesOrdering[][][], int minIndexToUse, int minRotationToUse,
+			int curPathArray[], int curNum) {
 		//System.out.println(numIterations);
 		
+		numIterations++;
 
 		//Display debug/what's-going-on update:
-		if(numIterations % 10000L == 0) {
+		if(numIterations % 100000L == 0) {
 			
 			System.out.println("Num iterations: " + numIterations);
 			Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
@@ -127,6 +151,7 @@ public class DFSPolyCubeCounterOptimized {
 			
 			
 		}
+		
 		//End display debug/what's-going-on update
 		debugIterations[numCellsUsedDepth] = numIterations;
 		
@@ -134,16 +159,18 @@ public class DFSPolyCubeCounterOptimized {
 		
 		//DEPTH-FIRST START:
 		for(int curOrderedIndexToUse=minIndexToUse; curOrderedIndexToUse<numCellsUsedDepth && cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
-
+			
 
 			//Try to attach a cell onto indexToUse using all rotations:
 			for(int dirNewCellAdd=0; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
+				
 				
 				if(curOrderedIndexToUse == minIndexToUse
 						&& dirNewCellAdd <  minRotationToUse) {
 					continue;
 				}
 
+				curNum++;
 				
 				int new_i = cubesToDevelop[curOrderedIndexToUse].a + nudgeBasedOnRotation[0][dirNewCellAdd];
 				int new_j = cubesToDevelop[curOrderedIndexToUse].b + nudgeBasedOnRotation[1][dirNewCellAdd];
@@ -166,19 +193,18 @@ public class DFSPolyCubeCounterOptimized {
 				
 				if( ! cantAddCellBecauseOfOtherNeighbours) {
 
-					numIterations++;
-					numIterationsByDepth[curOrderedIndexToUse] = numIterations;
 
-					
 					//Setup for adding new cube:
 					cubesUsed[new_i][new_j][new_k] = true;
 					cubesToDevelop[numCellsUsedDepth] = Coord3DSharedMem[new_i][new_j][new_k];
 					cubesOrdering[new_i][new_j][new_k] = numCellsUsedDepth;
 					//End setup
 
-					numCellsUsedDepth += 1;
+					curPathArray[numCellsUsedDepth - 1] = curNum;
 					
-					if(isFirstSightOfShape(cubesToDevelop, cubesUsed, numCellsUsedDepth)) {
+					numCellsUsedDepth += 1;
+
+					if(isFirstSightOfShape(cubesToDevelop, cubesUsed, numCellsUsedDepth, curPathArray)) {
 						
 						if(numCellsUsedDepth == cubesToDevelop.length - 1) {
 							
@@ -188,7 +214,8 @@ public class DFSPolyCubeCounterOptimized {
 						} else {
 							retDuplicateSolutions += doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
 									debugNope, debugIterations,
-									cubesOrdering, curOrderedIndexToUse, dirNewCellAdd
+									cubesOrdering, curOrderedIndexToUse, dirNewCellAdd + 1,
+									curPathArray, curNum
 								);
 						}
 					}
@@ -205,7 +232,6 @@ public class DFSPolyCubeCounterOptimized {
 				} // End recursive if cond
 			} // End loop rotation
 		} //End loop index
-		
 
 		return retDuplicateSolutions;
 	}
@@ -274,120 +300,40 @@ public class DFSPolyCubeCounterOptimized {
 		}
 	}
 	
-	public static boolean isFirstSightOfShape(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth) {
-
-		//TODO: Don't recalc this every time: (just keep track of it dynamically)
-		
-		//TODO: You shouldn't use the keyword 'new' outside of the start of the algorithm.
-		int arrayStandard[] = new int[numCellsUsedDepth];
-
-		int num = 0;
+	public static boolean isFirstSightOfShape(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth, int currentPolycubePerformance[]) {
 		
 		int minIndexToUse = 0;
 		int minRotation = -1;
-
-		cubesToDevelopInFirstFunction[0] = cubesToDevelop[0];
-		cubesUsedInFirstFunction[cubesToDevelopInFirstFunction[0].a][cubesToDevelopInFirstFunction[0].b][cubesToDevelopInFirstFunction[0].c] = true;
+		int num = 0;
 		
-		NEXT_CELL_INSERT:
-		for(int j=0; j<numCellsUsedDepth - 1; j++) {
-			
-			for(int curOrderedIndexToUse=minIndexToUse; cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
-
-				int dirStart = 0;
-
-				if(curOrderedIndexToUse == minIndexToUse) {
-					dirStart = minRotation + 1;
-				}
-
-				//Try to attach a cube onto a neighbouring cube:
-				for(int dirNewCellAdd=dirStart; dirNewCellAdd<NUM_NEIGHBOURS; dirNewCellAdd++) {
-
-					num++;
-					
-					int new_i = cubesToDevelop[curOrderedIndexToUse].a + nudgeBasedOnRotation[0][dirNewCellAdd];
-					int new_j = cubesToDevelop[curOrderedIndexToUse].b + nudgeBasedOnRotation[1][dirNewCellAdd];
-					int new_k = cubesToDevelop[curOrderedIndexToUse].c + nudgeBasedOnRotation[2][dirNewCellAdd];
-					
-					if(cubesUsed[new_i][new_j][new_k] && !cubesUsedInFirstFunction[new_i][new_j][new_k]) {
-						arrayStandard[j] = num;
-						
-						minIndexToUse=curOrderedIndexToUse;
-						minRotation=dirNewCellAdd;
-						
-						cubesUsedInFirstFunction[new_i][new_j][new_k] = true;
-						
-						//TEST
-						cubesToDevelopInFirstFunction[j+1] = Coord3DSharedMem[new_i][new_j][new_k];
-						
-						/*
-						//Sanity
-						if(cubesToDevelop[j + 1].a != new_i || cubesToDevelop[j + 1].b != new_j || cubesToDevelop[j + 1].c != new_k) {
-							
-							System.out.println("j + 1 = " + (j+1));
-							Utils.printCubesSingleDigitFirst10(cubesUsedInFirstFunction, cubesToDevelopInFirstFunction);
-							System.out.println("vs");
-							Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
-							System.out.println("DOH!");
-							System.exit(1);
-						} else {
-							//System.out.println("ok");
-						}
-						*/
-						//END TEST
-						
-						continue NEXT_CELL_INSERT;
-					}
-				}
-			}
-		}
+		int indexRootNeighbours = getNeighbourIndex(cubesToDevelop[0], cubesUsed);
 		
-		
-		/*
-		//Testing:
-		System.out.println("Print order:");
-		for(int i=0; i<arrayStandard.length; i++) {
-			if(i + 1 < arrayStandard.length) {
-				System.out.print(arrayStandard[i] + ", ");
-			} else {
-				System.out.print(arrayStandard[i]);
-			}
-		}
-		System.out.println();
-		
-		Utils.printCubes(cubesUsed, cubesToDevelop);
-		
-		System.out.println();
-		sanityComparePrevOrder(arrayStandard);
-		
-		*/
-		
-		
-		//END TODO Don't recalc this every time
-		
-		boolean numIterationsByDepthInverted = false;
 		for(int i=0; i<numCellsUsedDepth; i++) {
 			
-			if(! numIterationsByDepthInverted &&
-					numIterationsByDepth[i] == lastIterationtoComputeNoGoForDepth[i]) {
-				//System.out.println("SKIP!");
-				continue;
-			} else if(i > 0 && numIterationsByDepth[i] < numIterationsByDepth[i+1]) {
-				numIterationsByDepthInverted = true;
+			int listOfRotations[] = defaultListRotations;
+			
+			if(numCellsUsedDepth >= NUM_NEIGHBOURS_3D + 1) {
+				int indexNodeNeighbours = getNeighbourIndex(cubesToDevelop[i], cubesUsed);
+				
+				listOfRotations = startRotationsToConsiderFor3D[indexRootNeighbours][indexNodeNeighbours];
+				
+				if(listOfRotations == null) {
+					return false;
+				}
+				
+				
 			}
 
-			boolean searchGoesPast1stCell = false;
-	
 			NEXT_ROTATION:
-			for(int r=0; r<NUM_ROTATIONS_3D; r++) {
+			for(int ri=0; ri<listOfRotations.length; ri++) {
+				
+				int r = listOfRotations[ri];
 				
 				if(i==0 && r == 0) {
 					continue;
 				}
 				
-				clearCubesUsedInFirstFunction(cubesToDevelop);
 				
-
 				minIndexToUse = 0;
 				minRotation = -1;
 				num = 0;
@@ -397,6 +343,8 @@ public class DFSPolyCubeCounterOptimized {
 
 				cubesToDevelopInFirstFunction[0] = cur;
 				cubesUsedInFirstFunction[cur.a][cur.b][cur.c] = true;
+
+				
 				int numCellsInserted = 1;
 
 
@@ -407,8 +355,6 @@ public class DFSPolyCubeCounterOptimized {
 
 					if(curOrderedIndexToUse == minIndexToUse) {
 						dirStart = minRotation + 1;
-					} else {
-						searchGoesPast1stCell = true;
 					}
 
 					//Try to attach a cube onto a neighbouring cube:
@@ -422,7 +368,7 @@ public class DFSPolyCubeCounterOptimized {
 						
 						if(cubesUsed[new_i][new_j][new_k] && !cubesUsedInFirstFunction[new_i][new_j][new_k]) {
 							
-							if(num < arrayStandard[numCellsInserted - 1]) {
+							if(num < currentPolycubePerformance[numCellsInserted - 1]) {
 								
 	                            
 								//System.out.println("Not first sight!");
@@ -431,12 +377,13 @@ public class DFSPolyCubeCounterOptimized {
 								//Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelopInFirstFunction);
 								//System.exit(1);
 
-								clearCubesUsedInFirstFunction(cubesToDevelop);
+								clearCubesUsedInFirstFunction(cubesToDevelopInFirstFunction);
 								
 								return false;
 
-	                        } else if(num > arrayStandard[numCellsInserted - 1]) {
+	                        } else if(num > currentPolycubePerformance[numCellsInserted - 1]) {
 	                        	//System.out.println("Nope!");
+	                        	clearCubesUsedInFirstFunction(cubesToDevelopInFirstFunction);
 	                            continue NEXT_ROTATION;
 	                        }
 	                        minIndexToUse=curOrderedIndexToUse;
@@ -454,13 +401,9 @@ public class DFSPolyCubeCounterOptimized {
 					}
 				}
 				
+				clearCubesUsedInFirstFunction(cubesToDevelopInFirstFunction);
 				
 			} //END checking every symmetry
-			
-			if(searchGoesPast1stCell == false) {
-				lastIterationtoComputeNoGoForDepth[i] = numIterations;
-			}
-
 		} // END checking every cubes added
 		
 
@@ -468,7 +411,6 @@ public class DFSPolyCubeCounterOptimized {
 		//System.out.println("First sight!");
 		//Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
 		
-		clearCubesUsedInFirstFunction(cubesToDevelop);
 		return true;
 	}
 	
@@ -622,6 +564,147 @@ public class DFSPolyCubeCounterOptimized {
 		
 		return c;
 	}
+	
+
+	//First index: 6 neighbours around root desc
+	//Second index: 6 neighbours around node desc
+	// This is only guaranteed to work when the number of polycubes is 7+
+	public static int defaultListRotations[];
+	public static int startRotationsToConsiderFor3D[][][];
+	
+	//TODO: just make startRotationsToConsiderFor3D null in this case:
+	//public static boolean secondStartPositionIsFirstAllRotations[][] = new boolean[(int)Math.pow(2, NUM_NEIGHBOURS_3D)][(int)Math.pow(2, NUM_NEIGHBOURS_3D)];
+	
+	//TODO: just make startRotationsToConsiderFor3D array empty in this case:
+	//public static boolean secondStartPositionIsNotFirstAllRotations[][] = new boolean[(int)Math.pow(2, NUM_NEIGHBOURS_3D)][(int)Math.pow(2, NUM_NEIGHBOURS_3D)];
+	
+	public static void generateStartRotationsRuleOfThump3D() {
+		
+		//Default list for when the polycube isn't big enough:
+		defaultListRotations = new int[NUM_ROTATIONS_3D];
+		for(int i=0; i<NUM_ROTATIONS_3D; i++) {
+			defaultListRotations[i] = i;
+		}
+		//End default list
+		ArrayList<Integer> validRotations;
+		
+		int numNeighbourConfigs = (int)Math.pow(2, NUM_NEIGHBOURS_3D);
+		
+		startRotationsToConsiderFor3D = new int[numNeighbourConfigs][numNeighbourConfigs][];
+		
+		int LENGTH_SIDES_FOR_EXERCISE = 3;
+		int START_INDEX_EACH_DIM = LENGTH_SIDES_FOR_EXERCISE / 2;
+		
+		for(int i=0; i<numNeighbourConfigs; i++) {
+			
+			validRotations = new ArrayList<Integer>();
+			
+			NEXT_ARRAY_ELEMENT:
+			for(int j=0; j<numNeighbourConfigs; j++) {
+				
+				//Coord3D cubesToDevelop1[] = new Coord3D[NUM_NEIGHBOURS_3D + 2];
+				//Coord3D cubesToDevelop3[];
+				boolean cubesUsed1[][][] = new boolean[LENGTH_SIDES_FOR_EXERCISE][LENGTH_SIDES_FOR_EXERCISE][LENGTH_SIDES_FOR_EXERCISE];
+				boolean cubesUsed2[][][] = new boolean[LENGTH_SIDES_FOR_EXERCISE][LENGTH_SIDES_FOR_EXERCISE][LENGTH_SIDES_FOR_EXERCISE];
+				
+				for(int i2=0; i2<cubesUsed1.length; i2++) {
+					for(int j2=0; j2<cubesUsed1[i2].length; j2++) {
+						for(int k2=0; k2<cubesUsed1[j2].length; k2++) {
+							cubesUsed1[i2][j2][k2] = false;
+							cubesUsed2[i2][j2][k2] = false;
+						}
+					}
+				}
+				
+				
+				cubesUsed1[START_INDEX_EACH_DIM][START_INDEX_EACH_DIM][START_INDEX_EACH_DIM] = true;
+				cubesUsed2[START_INDEX_EACH_DIM][START_INDEX_EACH_DIM][START_INDEX_EACH_DIM] = true;
+				
+				cubesUsed1 = setupNeighboursBasedOnNeighbourConfigIndex(cubesUsed1, i, START_INDEX_EACH_DIM);
+				cubesUsed2 = setupNeighboursBasedOnNeighbourConfigIndex(cubesUsed2, j, START_INDEX_EACH_DIM);
+				
+				for(int r=0; r<NUM_ROTATIONS_3D; r++) {
+					
+					int indexForRotation = 0;
+					
+					for(int dirNewCellAdd=0; dirNewCellAdd<NUM_NEIGHBOURS_3D; dirNewCellAdd++) {
+
+						
+						int new_i = START_INDEX_EACH_DIM + nugdeBasedOnRotationAllStartingSymmetries[r][0][dirNewCellAdd];
+						int new_j = START_INDEX_EACH_DIM + nugdeBasedOnRotationAllStartingSymmetries[r][1][dirNewCellAdd];
+						int new_k = START_INDEX_EACH_DIM + nugdeBasedOnRotationAllStartingSymmetries[r][2][dirNewCellAdd];
+						
+						
+						if(cubesUsed2[new_i][new_j][new_k]) {
+							
+							indexForRotation += (int)Math.pow(2, NUM_NEIGHBOURS_3D-1-dirNewCellAdd);
+						}
+						
+					}
+					
+					if(indexForRotation > i) {
+						
+						//System.out.println(i +" vs " + j + " no good because of rotation: " + r);
+						//TODO: ahh! the logic change if 2nd cell developed or not!
+						startRotationsToConsiderFor3D[i][j] = null;
+						continue NEXT_ARRAY_ELEMENT;
+					} else if(indexForRotation < i) {
+						//Not a contender
+						//Keep going
+					} else {
+						//System.out.println("Add possible contender: " + i +", " + j + ": " + r);
+						validRotations.add(r);
+					}
+				}
+				
+				//Put it in the array:
+				
+				startRotationsToConsiderFor3D[i][j] = toIntArray(validRotations);
+				
+			}
+		}
+		
+	}
+	
+	public static int[] toIntArray(ArrayList<Integer> arrayListInts) {
+		int ret[] = new int[arrayListInts.size()];
+		
+		for(int i=0; i<arrayListInts.size(); i++) {
+			ret[i] = arrayListInts.get(i).intValue();
+		}
+		
+		return ret;
+	}
+	
+	public static int getNeighbourIndex(Coord3D point, boolean cubesUsed[][][]) {
+		
+		
+		return  32 * (cubesUsed[point.a + nudgeBasedOnRotation[0][0]][point.b + nudgeBasedOnRotation[1][0]][point.c + nudgeBasedOnRotation[2][0]] ? 1 : 0)
+			  + 16 * (cubesUsed[point.a + nudgeBasedOnRotation[0][1]][point.b + nudgeBasedOnRotation[1][1]][point.c + nudgeBasedOnRotation[2][1]] ? 1 : 0)
+			  +  8 * (cubesUsed[point.a + nudgeBasedOnRotation[0][2]][point.b + nudgeBasedOnRotation[1][2]][point.c + nudgeBasedOnRotation[2][2]] ? 1 : 0)
+			  +  4 * (cubesUsed[point.a + nudgeBasedOnRotation[0][3]][point.b + nudgeBasedOnRotation[1][3]][point.c + nudgeBasedOnRotation[2][3]] ? 1 : 0)
+			  +  2 * (cubesUsed[point.a + nudgeBasedOnRotation[0][4]][point.b + nudgeBasedOnRotation[1][4]][point.c + nudgeBasedOnRotation[2][4]] ? 1 : 0)
+			  +  1 * (cubesUsed[point.a + nudgeBasedOnRotation[0][5]][point.b + nudgeBasedOnRotation[1][5]][point.c + nudgeBasedOnRotation[2][5]] ? 1 : 0);
+		
+	}
+	
+	public static boolean[][][] setupNeighboursBasedOnNeighbourConfigIndex(boolean cubesUsed[][][], int index, int startIndexEachDim) {
+	
+		//int 
+		//public static final int nudgeBasedOnRotation[][] = {{-1, 0,  1,  0,  0,  0},
+		//		{0,  1,  0, -1,  0,  0},
+		//		{0,  0,  0,  0,  1,  -1}};
+		
+		for(int i=0; i<nudgeBasedOnRotation[0].length; i++) {
+			if( (index & (1 << (nudgeBasedOnRotation[0].length - 1 - i))) != 0) {
+				
+				cubesUsed[startIndexEachDim + nudgeBasedOnRotation[0][i]]
+						 [startIndexEachDim + nudgeBasedOnRotation[1][i]]
+						 [startIndexEachDim + nudgeBasedOnRotation[2][i]] = true;
+			}
+		}
+		return cubesUsed;
+	}
 
 	public static void main(String args[]) {
 		
@@ -640,8 +723,8 @@ public class DFSPolyCubeCounterOptimized {
 		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
-		int N = 8;
-		solveCuboidIntersections(N);
+		int N = 13;
+		enumerateNumberOfPolycubes(N);
 		
 		//So far, I think I could get f(14) in 10 hours...
 		//So, f(16) will probably take 2 months...
@@ -651,6 +734,13 @@ public class DFSPolyCubeCounterOptimized {
 		//N=13 ended at: 2:15:03 (85 minutes)
 		//N=14 ended at: 12:32:03 PM (11 hours and 42 minutes) (Final number of unique solutions: 1039496297)
 		
+		//Update Optimized2 is over twice as fast!
+		// N=12 took less than 3.5 minutes (It took over 10 minutes before)
+		// N=13 started at 3:41:54 AM and ended at 4:09:49 AM (It took about 28 minutes vs the 85 minutes it took when I ran unoptimized)
+		// It also got the right answer: "Final number of unique solutions: 138462649"
+		
+		//Update for Optimized3:
+		// N=13: start: 3:58:50 PM end: 4:31:32 PM (It took less than 33 minutes) Worse than Optimized2?
 		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		

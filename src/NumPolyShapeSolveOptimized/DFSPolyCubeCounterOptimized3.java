@@ -26,12 +26,9 @@ public class DFSPolyCubeCounterOptimized3 {
 	
 	public static Coord3D Coord3DSharedMem[][][];
 	
-	public static void solveCuboidIntersections(int N) {
+	public static void enumerateNumberOfPolycubes(int N) {
 		
-
-		generateAllTheNudges();
-		
-		generateStartRotationsRuleOfThump3D();
+		initializePrecomputedVars(N);
 
 		//I decided to null terminate the arrays because I'm nostalgic towards my C programming days...
 		Coord3D cubesToDevelop[] = new Coord3D[N + 1];
@@ -45,10 +42,8 @@ public class DFSPolyCubeCounterOptimized3 {
 		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
 	
 		boolean cubesUsed[][][] = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
-		cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
 		
 		int cubesOrdering[][][] = new int[GRID_SIZE][GRID_SIZE][GRID_SIZE];
-		Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
 		
 
 		for(int i=0; i<cubesUsed.length; i++) {
@@ -56,8 +51,6 @@ public class DFSPolyCubeCounterOptimized3 {
 				for(int k=0; k<cubesUsed[2].length; k++) {
 					cubesUsed[i][j][k] = false;
 					cubesOrdering[i][j][k] = NOT_INSERTED;
-					Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
-					cubesUsedInFirstFunction[i][j][k] = false;
 				}
 			}
 		}
@@ -97,6 +90,36 @@ public class DFSPolyCubeCounterOptimized3 {
 		System.out.println();
 		System.out.println();
 		System.out.println("Final number of unique solutions: " + numSolutions);
+	}
+	
+	public static void initializePrecomputedVars(int N) {
+
+		generateAllTheNudges();
+		
+		generateStartRotationsRuleOfThump3D();
+		
+		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
+
+		for(int i=0; i<cubesToDevelopInFirstFunction.length; i++) {
+			cubesToDevelopInFirstFunction[i] = null;
+		}
+		
+		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
+	
+		cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+		
+		Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+		
+
+		for(int i=0; i<Coord3DSharedMem.length; i++) {
+			for(int j=0; j<Coord3DSharedMem[1].length; j++) {
+				for(int k=0; k<Coord3DSharedMem[2].length; k++) {
+					Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
+					cubesUsedInFirstFunction[i][j][k] = false;
+				}
+			}
+		}
+
 	}
 	
 	
@@ -698,7 +721,7 @@ public class DFSPolyCubeCounterOptimized3 {
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
 		int N = 12;
-		solveCuboidIntersections(N);
+		enumerateNumberOfPolycubes(N);
 		
 		//So far, I think I could get f(14) in 10 hours...
 		//So, f(16) will probably take 2 months...
