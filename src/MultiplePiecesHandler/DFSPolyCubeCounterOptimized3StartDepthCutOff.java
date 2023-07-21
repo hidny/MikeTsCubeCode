@@ -2,14 +2,13 @@ package MultiplePiecesHandler;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import Coord.Coord3D;
 import Utils.Utils;
 
-//TODO: put the features of DFSPolyCubeComputeTaskGetter here.
-//TODO: Also, return the ComputeTaskDescription
-
 public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
+
 
 
 	public static final int NUM_ROTATIONS_3D = 24;
@@ -18,9 +17,6 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 	public static final int NUM_ROTATIONS_2D_CHEAT= 4;
 	public static final int NUM_ROTATIONS_2D = 4;
 
-	
-	//TODO: make it so the user can choose between 2D and 3D (For now, just change the var here)
-	//public static final int NUM_NEIGHBOURS = NUM_ROTATIONS_2D_CHEAT;
 	public static final int NUM_NEIGHBOURS = NUM_NEIGHBOURS_3D;
 	
 	public static final int BORDER_PADDING = 2;
@@ -29,10 +25,19 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 	
 	public static Coord3D Coord3DSharedMem[][][];
 	
-	public static void enumerateNumberOfPolycubes(int N) {
+
+	public static ComputeTaskDescription getComputeTask(int N, int maxDepth, int targetTaskIndex) {
+
+		curNumPiecesCreated = 0;
+		checkpointCounter = 0L;
+		
+		if(skipDirections == null) {
+			initSkipDirectionsHashTable();
+		}
 		
 		initializePrecomputedVars(N);
 
+		
 		//I decided to null terminate the arrays because I'm nostalgic towards my C programming days...
 		Coord3D cubesToDevelop[] = new Coord3D[N + 1];
 		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
@@ -81,21 +86,55 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 		int curPathArray[] = new int[N+1];
 		int curNum = 0;
 	
-		long numSolutions = doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
-				false, debugIterations, cubesOrdering, START_INDEX, START_ROTATION, curPathArray, curNum);
+		ComputeTaskDescription ret = doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
+				false, debugIterations, cubesOrdering, START_INDEX, START_ROTATION, curPathArray, curNum,
+				targetTaskIndex, maxDepth);
 		
-		System.out.println("-------------------");
-		System.out.println("-------------------");
-		System.out.println("-------------------");
-		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
-			
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println("Final number of unique solutions: " + numSolutions);
+		
+		return ret;
 	}
 	
-	public static void initializePrecomputedVars(int N) {
+
+
+	//Cut-off specific variables:
+	public static long checkpointCounter = 0;
+	public static long curNumPiecesCreated = 0;
+
+	public static int DEPTH_TO_BOTHER_INDEXING = 11;
+	public static HashMap<String, String> skipDirections[] = null;
+	
+
+	private static void initSkipDirectionsHashTable() {
+		skipDirections = new HashMap[DEPTH_TO_BOTHER_INDEXING];
+		
+		for(int i=0; i<skipDirections.length; i++) {
+			skipDirections[i] = new HashMap<String, String>();
+		}
+	}
+	
+
+	//Cut-off specific functions:
+	private static void setSkipToHashMap(int numCellsUsedDepth, long prevCheckpointCounter, long prevNumPiecesCreated) {
+
+		if(numCellsUsedDepth < DEPTH_TO_BOTHER_INDEXING && prevCheckpointCounter >= 0) {
+			
+			String key = prevCheckpointCounter + ", " + prevNumPiecesCreated;
+			
+			//System.out.println("Set Skip To hash Map!");
+			//System.out.println("curNumPiecesCreated: " + curNumPiecesCreated);
+			
+			if(skipDirections[numCellsUsedDepth].containsKey(key)) {
+				System.out.println("ERROR: Huh? This shouldn't happen?");
+				System.out.println("AAH!");
+				System.exit(0);
+			}
+			
+			skipDirections[numCellsUsedDepth].put(key, checkpointCounter + "," + curNumPiecesCreated);
+			
+		}
+	}
+	
+	private static void initializePrecomputedVars(int N) {
 
 		generateAllTheNudges();
 		
@@ -132,10 +171,11 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 	public static long numIterations = 0;
 	public static long numSolutionsSoFarDebug = 0L;
 	
-	public static long doDepthFirstSearch(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth,
+	private static ComputeTaskDescription doDepthFirstSearch(Coord3D cubesToDevelop[], boolean cubesUsed[][][], int numCellsUsedDepth,
 			boolean debugNope, long debugIterations[],
 			int cubesOrdering[][][], int minIndexToUse, int minRotationToUse,
-			int curPathArray[], int curNum) {
+			int curPathArray[], int curNum,
+			int targetTaskIndex, int maxDepth) {
 		//System.out.println(numIterations);
 		
 		numIterations++;
@@ -152,10 +192,40 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 			
 		}
 		
+		long prevCheckpointCounter = -1;
+		long prevNumPiecesCreated = -1;
+		
+		//Logic for skipping ahead on the second pass:
+		if(numCellsUsedDepth < DEPTH_TO_BOTHER_INDEXING) {
+			
+			prevCheckpointCounter = checkpointCounter;
+			prevNumPiecesCreated = curNumPiecesCreated;
+			
+			if(skipDirections[numCellsUsedDepth].containsKey(checkpointCounter + ", " + curNumPiecesCreated)) {
+
+				String tokens[] = skipDirections[numCellsUsedDepth].get(checkpointCounter + ", " + curNumPiecesCreated).split(",");
+				
+				if(Long.parseLong(tokens[1]) <= targetTaskIndex || targetTaskIndex < 0) {
+					checkpointCounter = Long.parseLong(tokens[0]);
+					curNumPiecesCreated = Long.parseLong(tokens[1]);
+					
+					//System.out.println("Going from " + prevCheckpointCounter + " to " + checkpointCounter);
+					//System.out.println("Going from " + prevNumPiecesCreated + " pieces to " + curNumPiecesCreated);
+					
+					//System.exit(0);
+					
+					return null;
+				}
+			}
+
+			
+		}
+		checkpointCounter++;
+		//End logic for skipping ahead on the second pass
+		
 		//End display debug/what's-going-on update
 		debugIterations[numCellsUsedDepth] = numIterations;
 		
-		long retDuplicateSolutions = 0L;
 		
 		//DEPTH-FIRST START:
 		for(int curOrderedIndexToUse=minIndexToUse; curOrderedIndexToUse<numCellsUsedDepth && cubesToDevelop[curOrderedIndexToUse] != null; curOrderedIndexToUse++) {
@@ -206,17 +276,48 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 
 					if(isFirstSightOfShape(cubesToDevelop, cubesUsed, numCellsUsedDepth, curPathArray)) {
 						
-						if(numCellsUsedDepth == cubesToDevelop.length - 1) {
+						if(numCellsUsedDepth == maxDepth) {
+							/*System.out.println();
+							System.out.println("PIECE FOUND:");
+							System.out.println("piece index: " + curNumPiecesCreated);
+							Utils.printFold(paperUsed);
+							Utils.printFoldWithIndex(indexCuboidonPaper);
+							Utils.printFoldWithIndex(indexCuboidOnPaper2ndCuboid);
 							
-							numSolutionsSoFarDebug++;
-							retDuplicateSolutions++;
+							System.out.println("Last cell inserted: " + indexCuboidonPaper[paperToDevelop[numCellsUsedDepth - 1].i][paperToDevelop[numCellsUsedDepth - 1].j]);
+							*/
+							if( targetTaskIndex == curNumPiecesCreated) {
+								
+								ComputeTaskDescription ret = new ComputeTaskDescription(cubesToDevelop, cubesUsed, numCellsUsedDepth,
+										debugNope, debugIterations, cubesOrdering, minIndexToUse, minRotationToUse,
+										curPathArray, curNum);
+								
+								System.out.println("---");
+								System.out.println();
+								System.out.println("New task description:");
+								System.out.println("Target task index: " + targetTaskIndex);
+								System.out.println("start depth: " + numCellsUsedDepth);
+								Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
+								System.out.println();
+								
+								return ret;
+								
+							}
+							
+							curNumPiecesCreated++;
 							
 						} else {
-							retDuplicateSolutions += doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
+							
+							ComputeTaskDescription ret = doDepthFirstSearch(cubesToDevelop, cubesUsed, numCellsUsedDepth,
 									debugNope, debugIterations,
 									cubesOrdering, curOrderedIndexToUse, dirNewCellAdd + 1,
-									curPathArray, curNum
+									curPathArray, curNum,
+									targetTaskIndex, maxDepth
 								);
+							
+							if(ret != null) {
+								return ret;
+							}
 						}
 					}
 					
@@ -233,10 +334,12 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 			} // End loop rotation
 		} //End loop index
 
-		return retDuplicateSolutions;
+		if(numCellsUsedDepth < DEPTH_TO_BOTHER_INDEXING) {
+			setSkipToHashMap(numCellsUsedDepth, prevCheckpointCounter, prevNumPiecesCreated);
+		}
+
+		return null;
 	}
-	
-	public static final int ONE_EIGHTY_ROTATION = 2;
 	
 	//I'm enforcing an artificial constraint where the polycube shape
 	// has to develop in the same order as a breath-first-search.
@@ -338,7 +441,6 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 				minRotation = -1;
 				num = 0;
 
-				//TODO: Avoid var declaration within loop...
 				Coord3D cur = cubesToDevelop[i];
 
 				cubesToDevelopInFirstFunction[0] = cur;
@@ -494,8 +596,9 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 				}
 			}
 		}
-		
-		testPrintAllTheNudges();
+
+		//For debug:
+		//testPrintAllTheNudges();
 		
 		//Sanity test:
 		for(int i=0; i<NUM_DIMS_3D; i++) {
@@ -568,16 +671,12 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 
 	//First index: 6 neighbours around root desc
 	//Second index: 6 neighbours around node desc
-	// This is only guaranteed to work when the number of polycubes is 7+
+	// This is only guaranteed to work when the number of polycubes is 7+ (or number of polycubes is greater than 2*d where d is the number of dimensions)
+	// The real check is to see if the root node is still able to add more neighbours to itself, but that's a slightly more complicated check
+	// that we don't need.
 	public static int defaultListRotations[];
 	public static int startRotationsToConsiderFor3D[][][];
-	
-	//TODO: just make startRotationsToConsiderFor3D null in this case:
-	//public static boolean secondStartPositionIsFirstAllRotations[][] = new boolean[(int)Math.pow(2, NUM_NEIGHBOURS_3D)][(int)Math.pow(2, NUM_NEIGHBOURS_3D)];
-	
-	//TODO: just make startRotationsToConsiderFor3D array empty in this case:
-	//public static boolean secondStartPositionIsNotFirstAllRotations[][] = new boolean[(int)Math.pow(2, NUM_NEIGHBOURS_3D)][(int)Math.pow(2, NUM_NEIGHBOURS_3D)];
-	
+
 	public static void generateStartRotationsRuleOfThump3D() {
 		
 		//Default list for when the polycube isn't big enough:
@@ -645,7 +744,8 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 					if(indexForRotation > i) {
 						
 						//System.out.println(i +" vs " + j + " no good because of rotation: " + r);
-						//TODO: ahh! the logic change if 2nd cell developed or not!
+						// Note that the logic changes if the 2nd cell is developed vs not developed.
+						// I have a hacky work-around for this...
 						startRotationsToConsiderFor3D[i][j] = null;
 						continue NEXT_ARRAY_ELEMENT;
 					} else if(indexForRotation < i) {
@@ -704,46 +804,6 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 			}
 		}
 		return cubesUsed;
-	}
-
-	public static void main(String args[]) {
-		
-		
-		System.out.println("Polycube counter program:");
-		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
-		
-		//Confirmed that the 2D version is this:
-			//A000105		Number of free polyominoes (or square animals) with n cells.
-			//(Formerly M1425 N0561)
-		// I originally made it up to 4655.
-		//1, 1, 1, 2, 5, 12, 35, 108, 369, 1285, 4655, 17073, 63600, 238591, 901971, 3426576, 13079255,
-		
-		//Confirmed that this program works with the 3D version: (I got it on the 1st try!)
-		//A000162		Number of 3-dimensional polyominoes (or polycubes) with n cells.
-		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
-		//(Formerly M1845 N0731)
-		//TODO: handle N=0 and N=1 case...
-		int N = 13;
-		enumerateNumberOfPolycubes(N);
-		
-		//So far, I think I could get f(14) in 10 hours...
-		//So, f(16) will probably take 2 months...
-		// and f(17) 2 years... Not bad, but I think I can do better!
-		
-		//N=13 and N=14 started at 12:50 AM
-		//N=13 ended at: 2:15:03 (85 minutes)
-		//N=14 ended at: 12:32:03 PM (11 hours and 42 minutes) (Final number of unique solutions: 1039496297)
-		
-		//Update Optimized2 is over twice as fast!
-		// N=12 took less than 3.5 minutes (It took over 10 minutes before)
-		// N=13 started at 3:41:54 AM and ended at 4:09:49 AM (It took about 28 minutes vs the 85 minutes it took when I ran unoptimized)
-		// It also got the right answer: "Final number of unique solutions: 138462649"
-		
-		//Update for Optimized3:
-		// N=13: start: 3:58:50 PM end: 4:31:32 PM (It took less than 33 minutes) Worse than Optimized2?
-		System.out.println("Done with N = " + N);
-		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
-		
 	}
 
 	

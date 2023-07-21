@@ -49,7 +49,8 @@ Mod: 2083723
 		
 		parseConfigFileAndSetOutputFile();
 		
-		long numPieces = getNumPieces(START_DEPTH, NUM_CUBES);
+		System.out.println("Get num pieces: " + NUM_CUBES + "," + START_DEPTH);
+		long numPieces = getNumPieces(NUM_CUBES, START_DEPTH);
 
 		System.out.println("Final num pieces:");
 		System.out.println(numPieces);
@@ -77,7 +78,7 @@ Mod: 2083723
 				continue;
 			}
 			
-			long cur = ComputeTaskMain.runSubtask(START_DEPTH, indexAfterTranslation, NUM_CUBES);
+			long cur = ComputeTaskMain.runSubtask(NUM_CUBES, START_DEPTH, indexAfterTranslation);
 
 			ret += cur;
 			
@@ -271,19 +272,12 @@ Mod: 2083723
 		}
 	}
 	
-	public static long getNumPieces(int startDepth, int n) {
+	//TODO: make sure the caller gets it in the right order:
+	public static long getNumPieces(int n, int startDepth) {
 		
-
-		ComputeTaskMain.updateComputeTask(startDepth, GET_ALL_PIECES_INDEX, n);
+		DFSPolyCubeCounterOptimized3StartDepthCutOff.getComputeTask(n, startDepth, -1);
 		
-		if(ComputeTaskMain.computeTask == null) {
-			System.out.println("Target index too high.");
-			System.out.println("Num pieces found: " + DFSPolyCubeComputeTaskGetter.curNumPiecesCreated);
-		}
-		
-		
-		
-		return DFSPolyCubeComputeTaskGetter.curNumPiecesCreated;
+		return DFSPolyCubeCounterOptimized3StartDepthCutOff.curNumPiecesCreated;
 	}
 	
 	

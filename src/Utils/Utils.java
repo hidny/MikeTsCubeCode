@@ -52,13 +52,13 @@ public class Utils {
 		return ret;
 	}
 	
-	public static void printCubes(boolean cubesUsed[][][], Coord3D cuboidsInOrderToDevelop[]) {
+	public static void printCubes(boolean cubesUsed[][][], Coord3D cubesToDevelop[]) {
 		//Just be lazy and do 2D for now:
 		int startKIndex = cubesUsed.length / 2;
 		
 		StringBuilder sb = new StringBuilder();
 		
-		int borders[] = getBorders(cuboidsInOrderToDevelop);
+		int borders[] = getBorders(cubesToDevelop);
 		
 		for(int i=borders[0]; i<borders[3] + 1; i++) {
 			for(int j=borders[1]; j<borders[4] + 1; j++) {
@@ -74,13 +74,13 @@ public class Utils {
 		
 	}
 	
-	public static void printCubesSingleDigitFirst10(boolean cubesUsed[][][], Coord3D cuboidsInOrderToDevelop[]) {
+	public static void printCubesSingleDigitFirst10(boolean cubesUsed[][][], Coord3D cubesToDevelop[]) {
 		//Just be lazy and do 2D for now:
 		int startKIndex = cubesUsed.length / 2;
 		
 		StringBuilder sb = new StringBuilder();
 		
-		int borders[] = getBorders(cuboidsInOrderToDevelop);
+		int borders[] = getBorders(cubesToDevelop);
 		
 		for(int i=borders[0]; i<borders[3] + 1; i++) {
 			for(int j=borders[1]; j<borders[4] + 1; j++) {
@@ -88,8 +88,8 @@ public class Utils {
 					
 					boolean isFirst10 = false;
 					int digit = -1;
-					for(int m=0; m<10 && cuboidsInOrderToDevelop[m] != null; m++) {
-						if(cuboidsInOrderToDevelop[m].a == i && cuboidsInOrderToDevelop[m].b == j && cuboidsInOrderToDevelop[m].c == startKIndex) {
+					for(int m=0; m<10 && cubesToDevelop[m] != null; m++) {
+						if(cubesToDevelop[m].a == i && cubesToDevelop[m].b == j && cubesToDevelop[m].c == startKIndex) {
 							isFirst10 = true;
 							digit = m;
 							break;

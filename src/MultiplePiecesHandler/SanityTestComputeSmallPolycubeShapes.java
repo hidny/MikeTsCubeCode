@@ -18,8 +18,7 @@ public class SanityTestComputeSmallPolycubeShapes {
 		for(int i=0; i<NUM_PIECED_FOR_N_AND_MAX_DEPTH; i++) {
 			
 			System.out.println(i);
-			
-			numSolutionsFound += ComputeTaskMain.runSubtask(maxDepth, i, N);
+			numSolutionsFound += ComputeTaskMain.runSubtask(N, maxDepth, i);
 			
 			
 		}

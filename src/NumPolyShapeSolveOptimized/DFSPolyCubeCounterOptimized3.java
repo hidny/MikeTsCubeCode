@@ -233,8 +233,6 @@ public class DFSPolyCubeCounterOptimized3 {
 		return retDuplicateSolutions;
 	}
 	
-	public static final int ONE_EIGHTY_ROTATION = 2;
-	
 	//I'm enforcing an artificial constraint where the polycube shape
 	// has to develop in the same order as a breath-first-search.
 	// This has a lot of advantages that I will need to explain in some docs.
@@ -492,7 +490,8 @@ public class DFSPolyCubeCounterOptimized3 {
 			}
 		}
 		
-		testPrintAllTheNudges();
+		//For debug:
+		//testPrintAllTheNudges();
 		
 		//Sanity test:
 		for(int i=0; i<NUM_DIMS_3D; i++) {
