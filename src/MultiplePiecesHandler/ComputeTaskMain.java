@@ -22,17 +22,15 @@ public class ComputeTaskMain {
 		
 	}
 	
-	//TODO: make sure the caller gets it in the right order:
 	public static long runSubtask(int numCubes, int start_depth, int targetIndex) {
-		
 
 		//System.out.println("DEBUG Target Index: " + targetIndex);
 		ComputeTaskDescription taskDescriptionToRun = DFSPolyCubeCounterOptimized3StartDepthCutOff.getComputeTask(numCubes, start_depth, targetIndex);
 		
 		if(taskDescriptionToRun == null) {
-			System.out.println("Target index too high.");
-			System.out.println("Num pieces found: " + DFSPolyCubeCounterOptimized3StartDepthCutOff.curNumPiecesCreated);
-			System.exit(1);
+			System.out.println("WARNING: Target index too high.");
+			System.out.println("Max target index: " + DFSPolyCubeCounterOptimized3StartDepthCutOff.curNumPiecesCreated);
+			return 0;
 		}
 		
 		

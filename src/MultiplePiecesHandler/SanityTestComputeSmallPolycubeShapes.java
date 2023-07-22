@@ -9,16 +9,23 @@ public class SanityTestComputeSmallPolycubeShapes {
 		
 		int maxDepth = 7;
 		
-		int N = 8;
-		int NUM_PIECED_FOR_N_AND_MAX_DEPTH = -1;
+		int N = 10;
+		int NUM_PIECED_FOR_N_AND_MAX_DEPTH = 600;
 		
 		long numSolutionsFound = 0L;
-		//TODO: num 
-		//10671
+		
+		int batchIndex = 1;
+
 		for(int i=0; i<NUM_PIECED_FOR_N_AND_MAX_DEPTH; i++) {
 			
+			int indexToUse = batchIndex * NUM_PIECED_FOR_N_AND_MAX_DEPTH + i;
 			System.out.println(i);
-			numSolutionsFound += ComputeTaskMain.runSubtask(N, maxDepth, i);
+			numSolutionsFound += ComputeTaskMain.runSubtask(N, maxDepth, indexToUse);
+			// N=10 test:
+			// 292722
+			//+ 53821
+			// -------
+			// 346543 (good!)
 			
 			
 		}

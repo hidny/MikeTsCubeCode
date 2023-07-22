@@ -9,6 +9,8 @@ import Utils.Utils;
 public class DFSPolyCubeCounterOptimized3 {
 
 
+	public static boolean debugPrint = false;
+
 	public static final int NUM_ROTATIONS_3D = 24;
 	
 	public static final int NUM_NEIGHBOURS_3D= 6;
@@ -138,7 +140,7 @@ public class DFSPolyCubeCounterOptimized3 {
 		numIterations++;
 
 		//Display debug/what's-going-on update:
-		if(numIterations % 100000L == 0) {
+		if(numIterations % 100000L == 0 && debugPrint) {
 			
 			System.out.println("Num iterations: " + numIterations);
 			Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
@@ -720,6 +722,8 @@ public class DFSPolyCubeCounterOptimized3 {
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
 		int N = 12;
+		debugPrint = true;
+		
 		enumerateNumberOfPolycubes(N);
 		
 		//So far, I think I could get f(14) in 10 hours...

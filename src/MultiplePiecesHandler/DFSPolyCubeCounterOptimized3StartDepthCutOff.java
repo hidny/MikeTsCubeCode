@@ -7,12 +7,8 @@ import java.util.HashMap;
 import Coord.Coord3D;
 import Utils.Utils;
 
-//TODO: I completely broke these dynamic vars:
-// curPathArray
-// curNum
-//TODO: fix it!
-public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 
+public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 
 
 	public static final int NUM_ROTATIONS_3D = 24;
