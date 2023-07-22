@@ -737,6 +737,18 @@ public class DFSPolyCubeCounterOptimized3 {
 		
 		//Update for Optimized3:
 		// N=13: start: 3:58:50 PM end: 4:31:32 PM (It took less than 33 minutes) Worse than Optimized2?
+		
+		
+		/* Start: July 17th 2023 11:35:48 AM EST
+		 * Output:
+		 * Final number of unique solutions: 59795121480
+Done with N = 16
+Current UTC timestamp in milliseconds: 1689973619436
+
+END: 	Fri Jul 21 2023 17:06:59 GMT-0400 (Eastern Daylight Time)
+
+4 days and 6 hours for the correct answer to N=16. N=17 is next!
+*/
 		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
