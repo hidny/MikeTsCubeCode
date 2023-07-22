@@ -19,6 +19,7 @@ I'm currently working on slicing it up into a bunch of pieces, so it could be ru
 * Finding the answer to N=17:
 	* If everything goes well, I'll have the answer to N=16 by July 22nd 2023, and I'll hopefully confirm that it matches what Kevin Gong said it would be.  
 (I'm currently 15 correct out of 15 trials)  
+		* Update: N=16 was found and it agreed with Kevin Gong's answer.
 	* Find N=17 by creating a program that slices up the problem into 1000ish digestible pieces, and running multiple CPUs on it at the same time.  
 	* To see the template I'll be working off of, see: https://github.com/hidny/weirdMathStuff/blob/master/cuboidNetSearch/READ_ME.md  
 		* I might bother to attach a GUI that has the option of stopping the program and explaining a bit about the program  
