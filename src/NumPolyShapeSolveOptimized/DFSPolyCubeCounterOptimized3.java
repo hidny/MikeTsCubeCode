@@ -9,7 +9,7 @@ import Utils.Utils;
 public class DFSPolyCubeCounterOptimized3 {
 
 
-	public static boolean debugPrint = false;
+	public static boolean debugPrintEvery5Seconds = false;
 
 	public static final int NUM_ROTATIONS_3D = 24;
 	
@@ -140,7 +140,8 @@ public class DFSPolyCubeCounterOptimized3 {
 		numIterations++;
 
 		//Display debug/what's-going-on update:
-		if(numIterations % 100000L == 0 && debugPrint) {
+		if((numIterations % 100000L == 0 && debugPrintEvery5Seconds)
+				|| numIterations % 10000000L == 0) {
 			
 			System.out.println("Num iterations: " + numIterations);
 			Utils.printCubesSingleDigitFirst10(cubesUsed, cubesToDevelop);
@@ -722,7 +723,7 @@ public class DFSPolyCubeCounterOptimized3 {
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
 		int N = 12;
-		debugPrint = true;
+		debugPrintEvery5Seconds = true;
 		
 		enumerateNumberOfPolycubes(N);
 		
