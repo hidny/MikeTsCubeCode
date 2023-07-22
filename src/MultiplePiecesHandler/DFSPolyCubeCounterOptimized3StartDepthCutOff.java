@@ -138,34 +138,42 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 		}
 	}
 	
+	public static boolean intitalizedPrecomputedVars = false;
+	
 	private static void initializePrecomputedVars(int N) {
 
-		generateAllTheNudges();
-		
-		generateStartRotationsRuleOfThump3D();
-		
-		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
-
-		for(int i=0; i<cubesToDevelopInFirstFunction.length; i++) {
-			cubesToDevelopInFirstFunction[i] = null;
-		}
-		
-		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
+		if(intitalizedPrecomputedVars == false
+				|| N != cubesToDevelopInFirstFunction.length - 1) {
+			
+			intitalizedPrecomputedVars = true;
+			
+			generateAllTheNudges();
+			
+			generateStartRotationsRuleOfThump3D();
+			
+			cubesToDevelopInFirstFunction = new Coord3D[N + 1];
 	
-		cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+			for(int i=0; i<cubesToDevelopInFirstFunction.length; i++) {
+				cubesToDevelopInFirstFunction[i] = null;
+			}
+			
+			int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
 		
-		Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
-		
-
-		for(int i=0; i<Coord3DSharedMem.length; i++) {
-			for(int j=0; j<Coord3DSharedMem[1].length; j++) {
-				for(int k=0; k<Coord3DSharedMem[2].length; k++) {
-					Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
-					cubesUsedInFirstFunction[i][j][k] = false;
+			cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+			
+			Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+			
+	
+			for(int i=0; i<Coord3DSharedMem.length; i++) {
+				for(int j=0; j<Coord3DSharedMem[1].length; j++) {
+					for(int k=0; k<Coord3DSharedMem[2].length; k++) {
+						Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
+						cubesUsedInFirstFunction[i][j][k] = false;
+					}
 				}
 			}
+			
 		}
-
 	}
 	
 	

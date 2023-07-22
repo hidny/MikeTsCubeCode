@@ -72,6 +72,11 @@ Mod: 2083723
 			//TODO: Don't shuffle! Keep it simple!
 			long indexBeforeTranslation = BATCH_INDEX_TO_USE * BATCH_SIZE + i;
 			
+			if(indexBeforeTranslation >= mod.longValue()) {
+				System.out.println("Ending batch early because there's no more pieces left to process.");
+				break;
+			}
+			
 			int indexAfterTranslation = getAPowerPmodMOD(new BigInteger("" + indexBeforeTranslation), exp, mod).intValue();
 			
 			if(indexAfterTranslation >= numPieces) {
