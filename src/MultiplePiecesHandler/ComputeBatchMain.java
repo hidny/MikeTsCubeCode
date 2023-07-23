@@ -89,7 +89,7 @@ Mod: 2083723
 			
 			System.out.println("Index pre-shuffle to post-shuffle: " + indexBeforeTranslation + " to " + indexAfterTranslation);
 			System.out.println("Done piece index: " + indexAfterTranslation);
-			System.out.println("Num solutions found after " + (i+1) + " iterations: " + ret);
+			System.out.println("Num solutions found after " + (i+1) + " iteration(s): " + ret);
 			System.out.println("-----");
 			System.out.println("");
 			System.out.println("");

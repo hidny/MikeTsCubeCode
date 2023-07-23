@@ -94,34 +94,42 @@ public class DFSPolyCubeCounterOptimized3 {
 		System.out.println("Final number of unique solutions: " + numSolutions);
 	}
 	
+	public static boolean intitalizedPrecomputedVars = false;
+
 	public static void initializePrecomputedVars(int N) {
 
-		generateAllTheNudges();
-		
-		generateStartRotationsRuleOfThump3D();
-		
-		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
-
-		for(int i=0; i<cubesToDevelopInFirstFunction.length; i++) {
-			cubesToDevelopInFirstFunction[i] = null;
-		}
-		
-		int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
+		if(intitalizedPrecomputedVars == false
+				|| N != cubesToDevelopInFirstFunction.length - 1) {
+			
+			intitalizedPrecomputedVars = true;
+			
+			generateAllTheNudges();
+			
+			generateStartRotationsRuleOfThump3D();
+			
+			cubesToDevelopInFirstFunction = new Coord3D[N + 1];
 	
-		cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+			for(int i=0; i<cubesToDevelopInFirstFunction.length; i++) {
+				cubesToDevelopInFirstFunction[i] = null;
+			}
+			
+			int GRID_SIZE = 2*N+1 + 2*BORDER_PADDING;
 		
-		Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
-		
-
-		for(int i=0; i<Coord3DSharedMem.length; i++) {
-			for(int j=0; j<Coord3DSharedMem[1].length; j++) {
-				for(int k=0; k<Coord3DSharedMem[2].length; k++) {
-					Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
-					cubesUsedInFirstFunction[i][j][k] = false;
+			cubesUsedInFirstFunction = new boolean[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+			
+			Coord3DSharedMem = new Coord3D[GRID_SIZE][GRID_SIZE][GRID_SIZE];
+			
+	
+			for(int i=0; i<Coord3DSharedMem.length; i++) {
+				for(int j=0; j<Coord3DSharedMem[1].length; j++) {
+					for(int k=0; k<Coord3DSharedMem[2].length; k++) {
+						Coord3DSharedMem[i][j][k] = new Coord3D(i, j, k);
+						cubesUsedInFirstFunction[i][j][k] = false;
+					}
 				}
 			}
+			
 		}
-
 	}
 	
 	
@@ -336,7 +344,6 @@ public class DFSPolyCubeCounterOptimized3 {
 				minRotation = -1;
 				num = 0;
 
-				//TODO: Avoid var declaration within loop...
 				Coord3D cur = cubesToDevelop[i];
 
 				cubesToDevelopInFirstFunction[0] = cur;
@@ -492,7 +499,7 @@ public class DFSPolyCubeCounterOptimized3 {
 				}
 			}
 		}
-		
+
 		//For debug:
 		//testPrintAllTheNudges();
 		
@@ -567,16 +574,12 @@ public class DFSPolyCubeCounterOptimized3 {
 
 	//First index: 6 neighbours around root desc
 	//Second index: 6 neighbours around node desc
-	// This is only guaranteed to work when the number of polycubes is 7+
+	// This is only guaranteed to work when the number of polycubes is 7+ (or number of polycubes is greater than 2*d where d is the number of dimensions)
+	// The real check is to see if the root node is still able to add more neighbours to itself, but that's a slightly more complicated check
+	// that we don't need.
 	public static int defaultListRotations[];
 	public static int startRotationsToConsiderFor3D[][][];
-	
-	//TODO: just make startRotationsToConsiderFor3D null in this case:
-	//public static boolean secondStartPositionIsFirstAllRotations[][] = new boolean[(int)Math.pow(2, NUM_NEIGHBOURS_3D)][(int)Math.pow(2, NUM_NEIGHBOURS_3D)];
-	
-	//TODO: just make startRotationsToConsiderFor3D array empty in this case:
-	//public static boolean secondStartPositionIsNotFirstAllRotations[][] = new boolean[(int)Math.pow(2, NUM_NEIGHBOURS_3D)][(int)Math.pow(2, NUM_NEIGHBOURS_3D)];
-	
+
 	public static void generateStartRotationsRuleOfThump3D() {
 		
 		//Default list for when the polycube isn't big enough:
@@ -644,7 +647,8 @@ public class DFSPolyCubeCounterOptimized3 {
 					if(indexForRotation > i) {
 						
 						//System.out.println(i +" vs " + j + " no good because of rotation: " + r);
-						//TODO: ahh! the logic change if 2nd cell developed or not!
+						// Note that the logic changes if the 2nd cell is developed vs not developed.
+						// I have a hacky work-around for this...
 						startRotationsToConsiderFor3D[i][j] = null;
 						continue NEXT_ARRAY_ELEMENT;
 					} else if(indexForRotation < i) {
@@ -722,7 +726,7 @@ public class DFSPolyCubeCounterOptimized3 {
 		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
-		int N = 12;
+		int N = 9;
 		debugPrintEvery5Seconds = true;
 		
 		enumerateNumberOfPolycubes(N);

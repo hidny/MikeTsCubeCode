@@ -37,7 +37,6 @@ public class DFSPolyCubeCounterOptimized3StartDepthCutOff {
 		
 		initializePrecomputedVars(N);
 
-		
 		//I decided to null terminate the arrays because I'm nostalgic towards my C programming days...
 		Coord3D cubesToDevelop[] = new Coord3D[N + 1];
 		cubesToDevelopInFirstFunction = new Coord3D[N + 1];
