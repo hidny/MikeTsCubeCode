@@ -1,0 +1,146 @@
+Counting shapes in 3D. As of now, 2 shapes that are rotationally symmetric in 3D are considered the same. (i.e. no reflections in 3D)
+Get num pieces: 17,7
+Final num pieces:
+1023
+
+Setup shuffle for pseudo-random sampling of tasks:
+17
+1027
+secret key: 101
+Sanity testing RSA shuffle:
+Done sanity test for e = 17, d = 101, and n = 1027
+Exp: 17
+Mod: 1027
+
+---
+
+New task description:
+Target task index: 983
+start depth: 7
+5..|
+31.|
+.02|
+..4|
+
+
+Run compute task for index 983: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 60 to 983
+Done piece index: 983
+Num solutions found after 1 iteration(s): 187344
+-----
+
+
+---
+
+New task description:
+Target task index: 94
+start depth: 7
+.1.|
+.02|
+.3.|
+
+
+Run compute task for index 94: (Please wait)
+Num iterations: 10000000
+#...|
+9...|
+8.1.|
+..02|
+..3.|
+
+Solutions: 62581818
+
+Finished task.
+Index pre-shuffle to post-shuffle: 61 to 94
+Done piece index: 94
+Num solutions found after 2 iteration(s): 79847181
+-----
+
+
+---
+
+New task description:
+Target task index: 966
+start depth: 7
+3.|
+1.|
+02|
+
+
+Run compute task for index 966: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 62 to 966
+Done piece index: 966
+Num solutions found after 3 iteration(s): 79847183
+-----
+
+
+---
+
+New task description:
+Target task index: 527
+start depth: 7
+..|
+1.|
+02|
+3.|
+
+
+Run compute task for index 527: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 63 to 527
+Done piece index: 527
+Num solutions found after 4 iteration(s): 95204206
+-----
+
+
+---
+
+New task description:
+Target task index: 1013
+start depth: 7
+31.|
+.02|
+...|
+
+
+Run compute task for index 1013: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 64 to 1013
+Done piece index: 1013
+Num solutions found after 5 iteration(s): 95204284
+-----
+
+
+---
+
+New task description:
+Target task index: 338
+start depth: 7
+.14|
+.02|
+53.|
+6..|
+
+
+Run compute task for index 338: (Please wait)
+Num iterations: 20000000
+...14|
+...02|
+..53.|
+#96..|
+..8#.|
+
+Solutions: 117017661
+
+Num iterations: 30000000
+.14.|
+.02.|
+53..|
+6...|
+78..|
+....|
+
+Solutions: 172809632
+

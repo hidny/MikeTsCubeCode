@@ -1,0 +1,234 @@
+Counting shapes in 3D. As of now, 2 shapes that are rotationally symmetric in 3D are considered the same. (i.e. no reflections in 3D)
+Get num pieces: 17,7
+Final num pieces:
+1023
+
+Setup shuffle for pseudo-random sampling of tasks:
+17
+1027
+secret key: 101
+Sanity testing RSA shuffle:
+Done sanity test for e = 17, d = 101, and n = 1027
+Exp: 17
+Mod: 1027
+
+---
+
+New task description:
+Target task index: 20
+start depth: 7
+.15|
+402|
+63.|
+
+
+Run compute task for index 20: (Please wait)
+Num iterations: 10000000
+....|
+...7|
+..15|
+.402|
+.63.|
+#...|
+
+Solutions: 69308113
+
+Finished task.
+Index pre-shuffle to post-shuffle: 50 to 20
+Done piece index: 20
+Num solutions found after 1 iteration(s): 132704720
+-----
+
+
+---
+
+New task description:
+Target task index: 558
+start depth: 7
+1.|
+02|
+3.|
+
+
+Run compute task for index 558: (Please wait)
+Num iterations: 20000000
+.1..|
+.02.|
+.3..|
+
+Solutions: 135031578
+
+Num iterations: 30000000
+1....|
+02...|
+3..#.|
+.....|
+.....|
+
+Solutions: 184576941
+
+Num iterations: 40000000
+......|
+......|
+.1....|
+.02...|
+.3....|
+
+Solutions: 233564194
+
+Finished task.
+Index pre-shuffle to post-shuffle: 51 to 558
+Done piece index: 558
+Num solutions found after 2 iteration(s): 249085262
+-----
+
+
+---
+
+New task description:
+Target task index: 403
+start depth: 7
+41..|
+.025|
+.3..|
+
+
+Run compute task for index 403: (Please wait)
+Num iterations: 50000000
+41...|
+.025.|
+.3...|
+
+Solutions: 282175484
+
+Finished task.
+Index pre-shuffle to post-shuffle: 52 to 403
+Done piece index: 403
+Num solutions found after 3 iteration(s): 284744791
+-----
+
+
+---
+
+New task description:
+Target task index: 976
+start depth: 7
+3.|
+1.|
+02|
+..|
+
+
+Run compute task for index 976: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 53 to 976
+Done piece index: 976
+Num solutions found after 4 iteration(s): 284780527
+-----
+
+
+---
+
+New task description:
+Target task index: 149
+start depth: 7
+4.|
+1.|
+02|
+3.|
+
+
+Run compute task for index 149: (Please wait)
+Num iterations: 60000000
+...|
+.4.|
+.1.|
+.02|
+.3.|
+.8#|
+
+Solutions: 355847669
+
+Num iterations: 70000000
+.4..|
+.1..|
+.02.|
+83..|
+....|
+
+Solutions: 426227918
+
+Num iterations: 80000000
+...4..|
+...1..|
+...02.|
+##83..|
+
+Solutions: 499020783
+
+Num iterations: 90000000
+....|
+.4..|
+.1..|
+.02.|
+.3..|
+
+Solutions: 569429407
+
+Num iterations: 100000000
+...|
+4..|
+1..|
+02.|
+3..|
+
+Solutions: 638825538
+
+Num iterations: 110000000
+9#|
+8.|
+4.|
+1.|
+02|
+3.|
+
+Solutions: 705999635
+
+Num iterations: 120000000
+#84..|
+..1..|
+..02.|
+..3..|
+
+Solutions: 773250583
+
+Num iterations: 130000000
+..4.|
+..1.|
+..02|
+..3.|
+
+Solutions: 838606397
+
+Num iterations: 140000000
+...|
+...|
+.4.|
+.1.|
+.02|
+.3.|
+.7.|
+
+Solutions: 904120665
+
+Num iterations: 150000000
+.8..|
+.4..|
+.1..|
+.02.|
+.3..|
+.7..|
+....|
+
+Solutions: 975079213
+
