@@ -726,7 +726,7 @@ public class DFSPolyCubeCounterOptimized3 {
 		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
-		int N = 9;
+		int N = 12;
 		debugPrintEvery5Seconds = true;
 		
 		enumerateNumberOfPolycubes(N);

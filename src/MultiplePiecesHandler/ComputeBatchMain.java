@@ -44,10 +44,18 @@ Mod: 2083723
 	
 	public static int GET_ALL_PIECES_INDEX = -1;
 	
+	public static String PROPERTIES_FILE_NAME = "cube_search.properties";
+	
+	public static final boolean IS_FIRST_TRIAL = true;
 	
 	public static void main(String[] args) {
 		
-		parseConfigFileAndSetOutputFile();
+		boolean foundPropFile = parseConfigFileAndSetOutputFile(PROPERTIES_FILE_NAME, IS_FIRST_TRIAL);
+		
+		if( ! foundPropFile ) {
+			//Try 1 level up, and then give up.
+			parseConfigFileAndSetOutputFile(".." + File.separator + PROPERTIES_FILE_NAME, ! IS_FIRST_TRIAL);
+		}
 		
 		System.out.println("Get num pieces: " + NUM_CUBES + "," + START_DEPTH);
 		long numPieces = getNumPieces(NUM_CUBES, START_DEPTH);
@@ -101,10 +109,13 @@ Mod: 2083723
 		
 	}
 	
-	public static void parseConfigFileAndSetOutputFile() {
+	public static boolean parseConfigFileAndSetOutputFile(String propertiesFileName, boolean firstTrial) {
 		
-		 try (InputStream input = new FileInputStream("cube_search.properties")) {
+		boolean retFound =false;
 		
+		 try (InputStream input = new FileInputStream(propertiesFileName)) {
+			 
+			 	retFound = true;
 		        Properties prop = new Properties();
 		
 		        // load a properties file
@@ -176,9 +187,18 @@ Mod: 2083723
 
 		 
 		    } catch (IOException ex) {
-		        ex.printStackTrace();
+		    	
+		    	if(firstTrial) {
+		    		System.out.println("WARNING: could not find properties file named: " + propertiesFileName);
+		    		System.out.println("Will attempt to find it in parent directory");
+		    	} else {
+		    		
+		    		System.out.println("ERROR: could not find properties file in parent directory. Relative path: " + propertiesFileName);
+			        ex.printStackTrace();
+		    	}
 		    }
 
+		 return retFound;
 	}
 	
 	
