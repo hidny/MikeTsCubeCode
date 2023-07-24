@@ -116,6 +116,16 @@ Mod: 2083723
 		 try (InputStream input = new FileInputStream(propertiesFileName)) {
 			 
 			 	retFound = true;
+			 	
+
+				 if(! firstTrial) {
+					 System.out.println("Found properties file in parent directory.");
+					 System.out.println();
+				 } else {
+					 System.out.println("Found properties file in current directory.");
+					 System.out.println();
+				 }
+			 	
 		        Properties prop = new Properties();
 		
 		        // load a properties file
@@ -189,8 +199,7 @@ Mod: 2083723
 		    } catch (IOException ex) {
 		    	
 		    	if(firstTrial) {
-		    		System.out.println("WARNING: could not find properties file named: " + propertiesFileName);
-		    		System.out.println("Will attempt to find it in parent directory");
+		    		//Try again.
 		    	} else {
 		    		
 		    		System.out.println("ERROR: could not find properties file in parent directory. Relative path: " + propertiesFileName);
