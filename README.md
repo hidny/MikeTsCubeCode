@@ -13,8 +13,117 @@ Thanks to Loïc Damien, the algorithm got ported to Rust, and got a speed boost. 
 
 I'm currently working on slicing it up into a bunch of pieces, so it could be run by multiple CPUs at the same time.
 
+## How to Run the program
+### How to Run on command line (Not recommended for large values of N)
 
-## More Detailed Plan:  
+#### Option 1: DFSPolyCubeCounterOptimized3
+
+Go to NumPolyShapeSolveOptimized/DFSPolyCubeCounterOptimized3.java and hard-code the value of N to 12
+
+Example:
+You could set the number of cubes to be 12:
+int N = 12;
+
+Install Java version 8+
+
+Example:
+$ java -version
+java version "1.8.0_73"
+Java(TM) SE Runtime Environment (build 1.8.0_73-b02)
+Java HotSpot(TM) 64-Bit Server VM (build 25.73-b02, mixed mode)
+
+Go to the src folder and run the javac and java commands:
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ javac NumPolyShapeSolveOptimized/DFSPolyCubeCounterOptimized3.java
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ java NumPolyShapeSolveOptimized/DFSPolyCubeCounterOptimized3
+Polycube counter program:
+Current UTC timestamp in milliseconds: 1690171204839
+Num iterations: 100000
+.5#|
+.1.|
+402|
+83.|
+
+Solutions: 829726
+(...)
+Current UTC timestamp in milliseconds: 1690171423790
+
+
+
+Final number of unique solutions: 18598427
+Done with N = 12
+Current UTC timestamp in milliseconds: 1690171423791
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+
+
+
+#### Option 2: the slower DFSPolyCubeCounter program
+
+
+Go to NumPolyShapeSolve/DFSPolyCubeCounter.java and hard-code the value of N to 12
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ javac NumPolyShapeSolve/DFSPolyCubeCounter.java
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ java NumPolyShapeSolve/DFSPolyCubeCounter
+Polycube counter program:
+Current UTC timestamp in milliseconds: 1690172328372
+Printing all the nudges:
+-1  0  1  0  0  0
+ 0  1  0 -1  0  0
+ 0  0  0  0  1 -1
+
+-1  0  1  0  0  0
+(,,,)
+
+Warning: it's slower!
+
+The reason I kept it is because I think it's slightly simpler than the optimized code, and you have the option of comparing the two files.
+
+#### Option 3: parallelized ComputeBatchMain
+
+Setup the cube_search.properties file to the settings you want. I'll document the meaning of the
+settings in the README file in cube_search_with_JAR later.
+
+For now, I recommend trying these settings:
+num_cubes=8
+num_dimensions=3
+search_start_depth=7
+batch_size=20
+batch_index_to_search=10000
+
+Go to src, and run javac and java:
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ javac MultiplePiecesHandler/ComputeBatchMain.java
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ java MultiplePiecesHandler/ComputeBatchMain
+Found properties file in parent directory.
+
+The program will output to this path:
+src\cube_count_output\cube_count_N_8_in_3D_SD_7_BS_20_IND_10.txt
+
+
+
+At end of file output, you should see the following:
+Total number of distinct shapes found for current batch: 18598427
+
+18598427 matches the number that's found in:
+http://kevingong.com/Polyominoes/Enumeration.html
+
+### Suboption: From JAR
+
+#### Through the command line
+
+#### By just double-clicking it.
+
+
+## Current Plan 
   
 * Finding the answer to N=17:
 	* If everything goes well, I'll have the answer to N=16 by July 22nd 2023, and I'll hopefully confirm that it matches what Kevin Gong said it would be.  
@@ -23,7 +132,8 @@ I'm currently working on slicing it up into a bunch of pieces, so it could be ru
 	* Find N=17 by creating a program that slices up the problem into 1000ish digestible pieces, and running multiple CPUs on it at the same time.  
 	* To see the template I'll be working off of, see: https://github.com/hidny/weirdMathStuff/blob/master/cuboidNetSearch/READ_ME.md  
 		* I might bother to attach a GUI that has the option of stopping the program and explaining a bit about the program  
-		* Once it's set up, I will run the program on 3 cores of my laptop for about 2 weeks and get the answer for N = 17. (I hope)  
+		* Once it's set up, I will run the program on 3 cores of my laptop for about 2 weeks and get the answer for N = 17. (I hope) 
+			* Update: this program is currently running, and will take under 3 weeks.
   
 * Once I find the answer for N=17:  
 	* I'll announce it to everyone including Kevin Gong once the README is cleaned up  
@@ -31,13 +141,15 @@ I'm currently working on slicing it up into a bunch of pieces, so it could be ru
 	* I could move on to finding the answer when we say that mirrored shapes are the same  
 		* In the worst case, it will take twice as long. In the best case, there's a short-cut.  
   
-	* If I feel like it, maybe I could find the answer for N=18, but optimistically, that will take 4 months on my machine.  
+	* If I feel like it, maybe I could find the answer for N=18, but optimistically, that will take 4 months on my machine. Maybe I could hope that someone else does it?
   
 * I might explore solving this for 4D spaces, and then 5D, and so on...  
 	* I just have to learn how rotations work in 4+D space.  
 	* Once the # of dimensions is high enough, I might need to conserve space by using hash sets instead of bool arrays. We'll see.
 	
-* I might explore an idea I had for an even faster algorithm.  
+* I might explore an idea I had for an even faster algorithm:
+	* I think that we could solve the 2D case pretty easily given that we have the answers to the number of fixed solutions.
+	(I'm thinking about the 2D case because that's the one where it's known until N = 46)
   
 ## High-level explanation of the algorithm  
   
@@ -68,7 +180,7 @@ where A(n) is the number of answers as a function of n.
 ### Explanation of why it's good to throw away non-first polycube shapes  
   
 An improvement that I found by accident is that if we don't delve deeper into breadth-first search paths  
-that aren't first, for a complicated reason, we still get the right answer, but faster. The time complexity is still the same, but we get to save a good amount of time.  
+that aren't first, for a complicated reason, we still get the right answer, but faster. The time complexity might still be the same, but we get to save a good amount of time. I haven't figured out if there's an improvement in the time complexity and It doesn't seem like an easy thing to work out. I'll look into this later. 
   
 #### Proof for why you could throw those away non-first polycube shapes  
   
@@ -79,7 +191,7 @@ Theorem:  
 * Note that for the base-case of N=1 or 2, there's only 1 answer to work with anyways.  
   
 Follow these step:  
-* Start with any race winner for for a polycube size N+1  
+* Start with getting the race winner for a polycube size N+1  
 * Remove the last cube (Cend) it used from the polycube (and from the breadth-first-search path it took)  
   
   
@@ -105,11 +217,11 @@ Therefore, the theorem is true and you could throw away paths that lose the race
 ## Lower level explanation of code:  
   
 * Tried to reduce memory allocations by having pretty much all the memory declared at the start of the program.
-* Decided to be 'wasteful' with space usage by using a bool array that is N^3 in size instead of using a hashset because that meant not constantly allocating memory..  
+* Decided to be 'wasteful' with space usage by using a bool array that is N^3 in size instead of using a hashset because that meant not constantly allocating memory...  
 	* N^3 bits for N=40 is only 32000 bits...  
 * Relevant code may be complicated, but it's only around 800 lines.  
-* I tried to reduce branching by suggesting that the compiler do arithmetic instead of branching in the getNeighbourIndex() function and I think the compiler actually understood!  
-* Probably could be rewritten in C or assembly for better results. If I were interested in writing C or assembly for optimizations, this would be what I would work on.
+* I tried to reduce branching by suggesting that the compiler do arithmetic instead of branching in the getNeighbourIndex() function and I think the compiler actually understood!
+* This probably could be rewritten in C, or Rust, or assembly for better results. If I were interested in writing C or assembly for optimizations, this would be what I would work on.
 
 * It got better results when it was ported to Rust. See Loïc Damien's code: https://gitlab.com/dzamlo/polycubes  
 * I didn't use a profiler, and I just used my intuition. I wouldn't be surprised if an expert can do much better.  
