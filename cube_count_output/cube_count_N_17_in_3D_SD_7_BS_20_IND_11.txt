@@ -1,0 +1,25 @@
+Counting shapes in 3D. As of now, 2 shapes that are rotationally symmetric in 3D are considered the same. (i.e. no reflections in 3D)
+Get num pieces: 17,7
+Final num pieces:
+1023
+
+Setup shuffle for pseudo-random sampling of tasks:
+17
+1027
+secret key: 101
+Sanity testing RSA shuffle:
+Done sanity test for e = 17, d = 101, and n = 1027
+Exp: 17
+Mod: 1027
+
+---
+
+New task description:
+Target task index: 571
+start depth: 7
+1.|
+02|
+3.|
+
+
+Run compute task for index 571: (Please wait)

@@ -232,3 +232,461 @@ Num iterations: 150000000
 
 Solutions: 975079213
 
+Num iterations: 160000000
+..48.|
+..1..|
+..02.|
+..3..|
+.#7##|
+.....|
+
+Solutions: 1045932892
+
+Num iterations: 170000000
+#.....|
+#84...|
+..1...|
+..02..|
+..3...|
+..7...|
+
+Solutions: 1116275798
+
+Num iterations: 180000000
+.4....|
+.1....|
+.02...|
+.3....|
+.7....|
+.#....|
+
+Solutions: 1186661966
+
+Num iterations: 190000000
+4.|
+1.|
+02|
+3.|
+7.|
+
+Solutions: 1255545900
+
+Num iterations: 200000000
+4....|
+1....|
+02...|
+3....|
+7....|
+
+Solutions: 1321803928
+
+Num iterations: 210000000
+.4.|
+.1.|
+.02|
+.3.|
+87.|
+9..|
+...|
+...|
+
+Solutions: 1385153835
+
+Num iterations: 220000000
+..4.|
+..1.|
+..02|
+.73.|
+##..|
+....|
+
+Solutions: 1454727983
+
+Num iterations: 230000000
+...4.|
+...1.|
+...02|
+.#73.|
+..#..|
+
+Solutions: 1527458472
+
+Num iterations: 240000000
+...8..|
+...4..|
+...1..|
+...02.|
+..73..|
+
+Solutions: 1597244998
+
+Num iterations: 250000000
+...|
+.48|
+.1.|
+.02|
+73.|
+
+Solutions: 1666826912
+
+Num iterations: 260000000
+.84.|
+..1.|
+..02|
+973.|
+#...|
+....|
+
+Solutions: 1736168881
+
+Num iterations: 270000000
+.4....|
+.1....|
+.02...|
+73....|
+9.....|
+
+Solutions: 1804185011
+
+Num iterations: 280000000
+.4..|
+.1..|
+.02.|
+73..|
+#.##|
+
+Solutions: 1869318593
+
+Num iterations: 290000000
+.#...|
+.94..|
+..1..|
+..02.|
+..3..|
+
+Solutions: 1936051133
+
+Num iterations: 300000000
+#8#.|
+.4..|
+.1..|
+.02.|
+.3..|
+
+Solutions: 2004663510
+
+Num iterations: 310000000
+#84.|
+..1.|
+..02|
+..3.|
+
+Solutions: 2071534067
+
+Num iterations: 320000000
+4.|
+1.|
+02|
+3.|
+
+Solutions: 2138355073
+
+Num iterations: 330000000
+4..|
+1..|
+02.|
+3..|
+
+Solutions: 2202125131
+
+Num iterations: 340000000
+.89.|
+.4..|
+.1..|
+.02.|
+.3..|
+
+Solutions: 2269954795
+
+Num iterations: 350000000
+84...|
+.1...|
+.02..|
+.3...|
+
+Solutions: 2339204127
+
+Num iterations: 360000000
+....|
+4...|
+1...|
+02..|
+3...|
+
+Solutions: 2408204221
+
+Num iterations: 370000000
+.4...|
+.1...|
+.02..|
+.3..#|
+
+Solutions: 2473867102
+
+Num iterations: 380000000
+.7.|
+84.|
+.1.|
+.02|
+.3.|
+...|
+
+Solutions: 2536703513
+
+Num iterations: 390000000
+....|
+79..|
+4...|
+1...|
+02..|
+3...|
+
+Solutions: 2602585941
+
+Num iterations: 400000000
+#.#..|
+847..|
+.1...|
+.02..|
+.3...|
+
+Solutions: 2665692915
+
+Num iterations: 410000000
+.47|
+.1.|
+.02|
+.3.|
+
+Solutions: 2730783053
+
+Num iterations: 420000000
+.#....|
+#74...|
+..1...|
+..02..|
+..3...|
+......|
+
+Solutions: 2793566016
+
+Num iterations: 430000000
+#.....|
+###...|
+.#....|
+.974..|
+.#.1..|
+...02.|
+...3..|
+
+Solutions: 2859114907
+
+Num iterations: 440000000
+....|
+4...|
+1...|
+02.#|
+3...|
+
+Solutions: 2922503784
+
+Num iterations: 450000000
+...|
+...|
+4..|
+1..|
+02.|
+3..|
+
+Solutions: 2984731387
+
+Num iterations: 460000000
+.4.....|
+.1.....|
+.02....|
+.3....#|
+
+Solutions: 3047289995
+
+Num iterations: 470000000
+4..|
+1..|
+02.|
+3..|
+...|
+...|
+
+Solutions: 3107489397
+
+Finished task.
+Index pre-shuffle to post-shuffle: 54 to 149
+Done piece index: 149
+Num solutions found after 5 iteration(s): 3131157678
+-----
+
+
+---
+
+New task description:
+Target task index: 971
+start depth: 7
+3..|
+1..|
+02.|
+...|
+
+
+Run compute task for index 971: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 55 to 971
+Done piece index: 971
+Num solutions found after 6 iteration(s): 3131192394
+-----
+
+
+---
+
+New task description:
+Target task index: 972
+start depth: 7
+3..|
+1..|
+02.|
+
+
+Run compute task for index 972: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 56 to 972
+Done piece index: 972
+Num solutions found after 7 iteration(s): 3131229432
+-----
+
+
+---
+
+New task description:
+Target task index: 1006
+start depth: 7
+31.|
+.02|
+...|
+
+
+Run compute task for index 1006: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 57 to 1006
+Done piece index: 1006
+Num solutions found after 8 iteration(s): 3131230167
+-----
+
+
+---
+
+New task description:
+Target task index: 886
+start depth: 7
+3..|
+1..|
+02.|
+.45|
+
+
+Run compute task for index 886: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 58 to 886
+Done piece index: 886
+Num solutions found after 9 iteration(s): 3131513370
+-----
+
+
+---
+
+New task description:
+Target task index: 284
+start depth: 7
+514|
+.02|
+.3.|
+
+
+Run compute task for index 284: (Please wait)
+Num iterations: 480000000
+.514...|
+..02...|
+..3....|
+.......|
+
+Solutions: 3169331998
+
+Num iterations: 490000000
+514..|
+.02..|
+.3...|
+.....|
+.....|
+
+Solutions: 3230043430
+
+Num iterations: 500000000
+..514|
+...02|
+...3.|
+.....|
+
+Solutions: 3292220394
+
+Num iterations: 510000000
+...|
+...|
+...|
+7..|
+514|
+.02|
+.3.|
+
+Solutions: 3351457544
+
+Num iterations: 520000000
+7...|
+514.|
+.02.|
+.3..|
+
+Solutions: 3411491583
+
+Num iterations: 530000000
+..514|
+...02|
+...3.|
+.#...|
+
+Solutions: 3470338635
+
+Num iterations: 540000000
+514.|
+.02.|
+.3..|
+....|
+....|
+....|
+
+Solutions: 3527051376
+
+Finished task.
+Index pre-shuffle to post-shuffle: 59 to 284
+Done piece index: 284
+Num solutions found after 10 iteration(s): 3566977313
+-----
+
+
+Total number of distinct shapes found for current batch: 3566977313

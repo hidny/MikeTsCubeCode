@@ -144,3 +144,151 @@ Num iterations: 30000000
 
 Solutions: 172809632
 
+Finished task.
+Index pre-shuffle to post-shuffle: 65 to 338
+Done piece index: 338
+Num solutions found after 6 iteration(s): 210582276
+-----
+
+
+---
+
+New task description:
+Target task index: 534
+start depth: 7
+...|
+.1.|
+.02|
+.3.|
+
+
+Run compute task for index 534: (Please wait)
+Num iterations: 40000000
+#...|
+98..|
+....|
+..1.|
+..02|
+..3.|
+
+Solutions: 225027986
+
+Finished task.
+Index pre-shuffle to post-shuffle: 66 to 534
+Done piece index: 534
+Num solutions found after 7 iteration(s): 235226028
+-----
+
+
+---
+
+New task description:
+Target task index: 591
+start depth: 7
+1.|
+02|
+3.|
+
+
+Run compute task for index 591: (Please wait)
+Finished task.
+Index pre-shuffle to post-shuffle: 67 to 591
+Done piece index: 591
+Num solutions found after 8 iteration(s): 251973789
+-----
+
+
+---
+
+New task description:
+Target task index: 113
+start depth: 7
+1..|
+025|
+3..|
+
+
+Run compute task for index 113: (Please wait)
+Num iterations: 50000000
+1....|
+025..|
+3....|
+
+Solutions: 279500304
+
+Num iterations: 60000000
+..#|
+..#|
+1..|
+025|
+3..|
+
+Solutions: 343729808
+
+Num iterations: 70000000
+....|
+1...|
+025.|
+3...|
+....|
+
+Solutions: 406353217
+
+Finished task.
+Index pre-shuffle to post-shuffle: 68 to 113
+Done piece index: 113
+Num solutions found after 9 iteration(s): 443324581
+-----
+
+
+---
+
+New task description:
+Target task index: 270
+start depth: 7
+..|
+4.|
+1.|
+02|
+3.|
+
+
+Run compute task for index 270: (Please wait)
+Num iterations: 80000000
+...|
+...|
+4..|
+1..|
+02.|
+3..|
+
+Solutions: 466367003
+
+Num iterations: 90000000
+....|
+....|
+4...|
+1...|
+02..|
+3...|
+
+Solutions: 523576589
+
+Num iterations: 100000000
+...|
+...|
+.4.|
+.1.|
+.02|
+.3.|
+
+Solutions: 579624610
+
+Finished task.
+Index pre-shuffle to post-shuffle: 69 to 270
+Done piece index: 270
+Num solutions found after 10 iteration(s): 587532932
+-----
+
+
+Total number of distinct shapes found for current batch: 587532932
