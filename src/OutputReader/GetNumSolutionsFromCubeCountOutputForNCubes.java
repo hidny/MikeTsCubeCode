@@ -9,8 +9,8 @@ public class GetNumSolutionsFromCubeCountOutputForNCubes {
 	//public static int START_DEPTH = 7;
 	//public static int N =17;
 	
-	public static int START_DEPTH = 6;
-	public static int N =12;
+	public static int START_DEPTH = 7;
+	public static int N =17;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -59,7 +59,7 @@ public class GetNumSolutionsFromCubeCountOutputForNCubes {
 							continue;
 
 						} else if(tmp.startsWith("Index pre-shuffle to post-shuffle:")) {
-							currentPieceIndex = getNumberAtEndOfLine(tmp);
+							currentPieceIndex = (int)getNumberAtEndOfLine(tmp);
 							
 						} else if(tmp.startsWith("Num solutions found after ")) {
 							
@@ -145,8 +145,8 @@ public class GetNumSolutionsFromCubeCountOutputForNCubes {
 			
 	}
 	
-	public static int getNumberAtEndOfLine(String s) {
-		return Integer
-				.parseInt(s.split(" ")[s.split(" ").length - 1]);
+	public static long getNumberAtEndOfLine(String s) {
+		return Long
+				.parseLong(s.split(" ")[s.split(" ").length - 1]);
 	}
 }
