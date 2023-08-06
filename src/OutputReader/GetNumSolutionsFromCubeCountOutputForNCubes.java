@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+
+//Number of solutions for 17 cubes: 457409613979
+
 public class GetNumSolutionsFromCubeCountOutputForNCubes {
 	
 	//public static int START_DEPTH = 7;
