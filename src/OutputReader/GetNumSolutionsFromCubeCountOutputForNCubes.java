@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 
 //Number of solutions for 17 cubes: 457409613979
+//                                  457409613979.00
+
 
 public class GetNumSolutionsFromCubeCountOutputForNCubes {
 	
@@ -30,6 +32,8 @@ public class GetNumSolutionsFromCubeCountOutputForNCubes {
 		long lastNumSolutions = -1L;
 
 		long ret = 0L;
+		
+		String excelString = "";
 
 
 		for (int i = 0; i < listOfFiles.length; i++) {
@@ -86,6 +90,8 @@ public class GetNumSolutionsFromCubeCountOutputForNCubes {
 								System.exit(1);
 							}
 							ret += numSolutionsForFile;
+							
+							excelString += numSolutionsForFile + "\n";
 
 							gotFinalNumber = true;
 						}
@@ -144,6 +150,11 @@ public class GetNumSolutionsFromCubeCountOutputForNCubes {
 			
 		}
 		
+		System.out.println("Numbers per file to check on excel:");
+		System.out.println(excelString);
+		
+		System.out.println();
+		System.out.println();
 		System.out.println("Number of solutions for " + N + " cubes: " + ret);
 			
 	}
