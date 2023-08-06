@@ -1753,3 +1753,284 @@ Num iterations: 1440000000
 
 Solutions: 9211867497
 
+Num iterations: 1450000000
+#.|
+7.|
+4.|
+1.|
+02|
+3.|
+..|
+..|
+
+Solutions: 9278063200
+
+Num iterations: 1460000000
+...|
+...|
+97.|
+.4.|
+.1.|
+.02|
+.3.|
+
+Solutions: 9344520111
+
+Num iterations: 1470000000
+...|
+##.|
+.7.|
+.4.|
+.1.|
+.02|
+.3.|
+
+Solutions: 9412859158
+
+Num iterations: 1480000000
+.#|
+9#|
+7.|
+4.|
+1.|
+02|
+3.|
+
+Solutions: 9480668350
+
+Num iterations: 1490000000
+...|
+.7.|
+.4.|
+.1.|
+.02|
+.3.|
+
+Solutions: 9543487703
+
+Num iterations: 1500000000
+847..|
+.1...|
+.02..|
+.3...|
+...##|
+...#.|
+
+Solutions: 9607995640
+
+Num iterations: 1510000000
+.9..|
+47..|
+1...|
+02..|
+3...|
+
+Solutions: 9675966200
+
+Num iterations: 1520000000
+.47#|
+.1..|
+.02.|
+.3..|
+....|
+
+Solutions: 9743379853
+
+Num iterations: 1530000000
+47..|
+1..#|
+02.#|
+3..#|
+
+Solutions: 9809179117
+
+Num iterations: 1540000000
+....|
+47..|
+1...|
+02..|
+3...|
+
+Solutions: 9875311841
+
+Num iterations: 1550000000
+74..|
+.1..|
+.02.|
+.3..|
+....|
+
+Solutions: 9936130679
+
+Num iterations: 1560000000
+74..|
+.1.#|
+.02.|
+.3..|
+
+Solutions: 10004933345
+
+Num iterations: 1570000000
+74..|
+.1..|
+.02.|
+.3..|
+
+Solutions: 10073855948
+
+Num iterations: 1580000000
+9....|
+74...|
+.1...|
+.02.#|
+.3...|
+
+Solutions: 10141492634
+
+Num iterations: 1590000000
+74...|
+.1...|
+.02..|
+.3...|
+
+Solutions: 10208431897
+
+Num iterations: 1600000000
+.74.|
+..1.|
+..02|
+..3.|
+....|
+....|
+
+Solutions: 10270571768
+
+Num iterations: 1610000000
+4....|
+1...#|
+02...|
+3....|
+
+Solutions: 10335860558
+
+Num iterations: 1620000000
+.....|
+..4..|
+..1..|
+..02.|
+..3..|
+
+Solutions: 10402298315
+
+Num iterations: 1630000000
+....|
+4...|
+1...|
+02..|
+3...|
+
+Solutions: 10468028358
+
+Num iterations: 1640000000
+.....|
+4....|
+1....|
+02...|
+3....|
+
+Solutions: 10528979477
+
+Num iterations: 1650000000
+..4..|
+..1..|
+..02.|
+..3..|
+.....|
+
+Solutions: 10596448833
+
+Num iterations: 1660000000
+....|
+....|
+..4.|
+..1.|
+..02|
+..3.|
+....|
+
+Solutions: 10662918249
+
+Num iterations: 1670000000
+..4.|
+..1.|
+..02|
+..3.|
+....|
+
+Solutions: 10726571407
+
+Num iterations: 1680000000
+.4..|
+.1..|
+.02.|
+.3..|
+....|
+....|
+
+Solutions: 10787568234
+
+Num iterations: 1690000000
+4..|
+1..|
+02.|
+3..|
+
+Solutions: 10848610864
+
+Num iterations: 1700000000
+.4..|
+.1..|
+.02.|
+.3..|
+...#|
+
+Solutions: 10911160629
+
+Num iterations: 1710000000
+..4.|
+..1.|
+..02|
+..3.|
+....|
+....|
+....|
+
+Solutions: 10971854708
+
+Num iterations: 1720000000
+...4.|
+.#.1.|
+##.02|
+.#.3.|
+.##..|
+
+Solutions: 11032978198
+
+Num iterations: 1730000000
+.4...|
+.1...|
+.02..|
+.3...|
+..#..|
+.....|
+
+Solutions: 11092087406
+
+Finished task.
+Index pre-shuffle to post-shuffle: 99 to 190
+Done piece index: 190
+Num solutions found after 20 iteration(s): 11140942708
+-----
+
+
+Total number of distinct shapes found for current batch: 11140942708

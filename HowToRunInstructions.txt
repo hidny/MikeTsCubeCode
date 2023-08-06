@@ -1,0 +1,97 @@
+
+
+Running the code from the command line: (Not recommended for large values of N)
+
+
+Running the Optimized code that doesn't parallelize:
+
+Go to NumPolyShapeSolveOptimized/DFSPolyCubeCounterOptimized3.java and hard-code the value of N to 12
+
+Example:
+You could set the number of cubes to be 12:
+int N = 12;
+
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ javac NumPolyShapeSolveOptimized/DFSPolyCubeCounterOptimized3.java
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ java NumPolyShapeSolveOptimized/DFSPolyCubeCounterOptimized3
+Polycube counter program:
+Current UTC timestamp in milliseconds: 1690171204839
+Num iterations: 100000
+.5#|
+.1.|
+402|
+83.|
+
+Solutions: 829726
+(...)
+Current UTC timestamp in milliseconds: 1690171423790
+
+
+
+Final number of unique solutions: 18598427
+Done with N = 12
+Current UTC timestamp in milliseconds: 1690171423791
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ java -version
+java version "1.8.0_73"
+Java(TM) SE Runtime Environment (build 1.8.0_73-b02)
+Java HotSpot(TM) 64-Bit Server VM (build 25.73-b02, mixed mode)
+
+
+----------------------
+
+
+Running the slower version of the code that's slightly easier to understand:
+
+Go to NumPolyShapeSolve/DFSPolyCubeCounter.java and hard-code the value of N to 12
+
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ javac NumPolyShapeSolve/DFSPolyCubeCounter.java
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ java NumPolyShapeSolve/DFSPolyCubeCounter
+Polycube counter program:
+Current UTC timestamp in milliseconds: 1690172328372
+Printing all the nudges:
+-1  0  1  0  0  0
+ 0  1  0 -1  0  0
+ 0  0  0  0  1 -1
+
+-1  0  1  0  0  0
+(,,,)
+
+Warning: it's slower!
+
+-------------------
+
+
+
+
+num_cubes=8
+num_dimensions=3
+search_start_depth=7
+batch_size=20
+batch_index_to_search=10000
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ javac MultiplePiecesHandler/ComputeBatchMain.java
+
+Michael@Felix MINGW64 ~/ProjectEuler2/PolycubeShapeCounter/src (main)
+$ java MultiplePiecesHandler/ComputeBatchMain
+Found properties file in parent directory.
+
+The program will output to this path:
+cube_count_output\cube_count_N_8_in_3D_SD_7_BS_20_IND_10.txt
+
+
+At end of file output:
+Total number of distinct shapes found for current batch: 18598427
+
+18598427 matches what's found in:
+http://kevingong.com/Polyominoes/Enumeration.html
+
