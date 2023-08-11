@@ -149,13 +149,15 @@ http://kevingong.com/Polyominoes/Enumeration.html
 	
 * I might explore an idea I had for an even faster algorithm:
 	* I think that we could solve the 2D case pretty easily given that we have the answers to the number of fixed solutions.
-	(I'm thinking about the 2D case because that's the one where it's known until N = 46)
+	(I'm thinking about the 2D case because that's the one where it's known until N = 56)
   
 ## High-level explanation of the algorithm  
   
 ### How a slightly more naïve version of it works:  
 The key feature of this algorithm is that it doesn't store the already found polycubes.  
-Instead, it develops the polycubes in a recursive way while making sure the order of the development respects a simple deterministic breadth-first-search algorithm.  
+Instead, it develops the polycubes in a recursive way while making sure the order of the development respects a simple deterministic breadth-first-search algorithm.
+TODO: I'll have to explain this in more detail.
+
 Once it finds a polycube shape of the desired size, it runs a function that does a 'race' to figure out if the cube and rotation we're using as a starting point for the polycube results is the 'first' time the polycube would be explored by the simple breadth-first-search algorithm. That may sound impossible, but if you only develop the polycubes in a systematic order that covers all the shapes, and not randomly, there's 'only' 24*N different competitors every time you run the 'race'. (24 is the # of symmetries in 3D and N is the number of cubes that could act as a starting point.)  
   
 The space usage is small because it doesn't hold previous configs. It's only O(n^3). It could even be lower if I really wanted it to be, but space isn't the issue.  
@@ -164,6 +166,7 @@ Unfortunately, the time taken is still exponential.
 The time it takes is something like O( A(n) * n^2 * log(n) )  
 where 'A(n)' is the number of answers as a function of n.
 See Appendix A for a generous upper-bound for A(n).
+
   
 #### Explanation of the time:  
   
@@ -182,9 +185,8 @@ where A(n) is the number of answers as a function of n.
 An improvement that I found by accident is that if we don't delve deeper into breadth-first search paths  
 that aren't first, for a complicated reason, we still get the right answer, but faster. The time complexity might still be the same, but we get to save a good amount of time. I haven't figured out if there's an improvement in the time complexity and It doesn't seem like an easy thing to work out. I'll look into this later. 
   
-#### Proof for why you could throw those away non-first polycube shapes  
+#### Rough Draft of proof for why you could throw those away non-first polycube shapes (I'll need to fill in the details with more definitions and diagrams)  
   
-Rough sketch of the proof: (I'll need to fill in the details with more definitions and diagrams)  
   
 Theorem:  
 * The race winner for a polycube size N+1 implies the existence of a race winner in polycube size N with the same starting path for N>2.  
@@ -238,3 +240,4 @@ The formula way overshoots the real value because it oversimplifies, but it work
 I'll explain it later.
 
 For a dimension d, the result changes to: c*((2d)^ (2d))^n
+
