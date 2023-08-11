@@ -172,7 +172,7 @@ The algorithms are different, but they are similar in that they both go through 
 I still haven't figured out which one is faster... it might be that Redelmeier's algo is faster, but mine was run on more powerful hardware and was fast enough to solve for N=17.
 
 It seems like they didn't have the idea of doing the 'race', but I'm starting to think the 'race' idea is slower than just finding all the 3D symmetries and figuring it out.
-The problem with finding all the 3D symmetries is that it's trickier and will take me some time to do properly.
+The problem with finding all the 3D symmetries is that it's trickier for me to implement and will take me some time to do properly.
 
   
 ## High-level explanation of the algorithm  
