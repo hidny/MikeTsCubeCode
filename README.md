@@ -150,6 +150,8 @@ I didn't implement this :(
 	* If I feel like it, maybe I could find the answer for N=18, but optimistically, that will take 4 months on my machine. Maybe I could hope that someone else does it?
 		(Update: I'm just going to hope... The rust program is really fast. I think the rust version will only takes 9 days on a strong machine)
 
+(Update: Discussions of this project mostly happened in these two links: https://github.com/mikepound/cubes/issues/23 and https://github.com/mikepound/opencubes/issues/27 )
+
 ## Current Plan that hasn't happened yet
 * I might explore an idea I had for an even faster algorithm:
 	* I think that we could solve the 2D case pretty easily given that we have the answers to the number of fixed solutions, and that we can hopefully calculate the number of rotational symmetries.
@@ -159,6 +161,8 @@ I didn't implement this :(
 	* I just have to learn how rotations work in 4+D space.
 	* Once the # of dimensions is high enough, I might need to conserve space by using hash sets instead of bool arrays. We'll see.
 	
+* Reread paper about this and make sure that I didn't reinvent the wheel in a worse way:
+https://www.sciencedirect.com/science/article/pii/S0012365X0900082X
   
 ## High-level explanation of the algorithm  
   
