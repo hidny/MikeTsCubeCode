@@ -154,8 +154,11 @@ I didn't implement this :(
 
 ## Current Plan that hasn't happened yet
 * I might explore an idea I had for an even faster algorithm:
-	* I think that we could solve the 2D case pretty easily given that we have the answers to the number of fixed solutions, and that we can hopefully calculate the number of rotational symmetries.
+	* I think that we could solve the 2D case pretty easily because we already have the answers to the number of fixed solutions, and that it's possible that we can calculate the number of rotational symmetries.
 	(I'm thinking about the 2D case because that's the one where it's known until N = 56, and it's a lot simpler than the 3D case.)
+
+* Once the 2D case is done, I might try to move on to the 3D case. The number of fixed solutions in 3D is known up till N=19, and maybe I could use that to find the  
+number of rotationally symmetric solutions up till N=19.
 
 * I might explore solving this for 4D spaces, and then 5D, and so on...  
 	* I just have to learn how rotations work in 4+D space.
