@@ -192,7 +192,7 @@ Unfortunately, the time taken is still exponential.
   
 The time it takes is something like O( A(n) * n^3 * log(n) )  
 where 'A(n)' is the number of answers as a function of n.
-A(n) seems to be an exponential that multiplies by a number between 8 and 9 every time n is increased by 1.
+A(n) seems to be an exponential that multiplies by a number between 7 and 9 every time n is increased by 1.
 See: https://oeis.org/A000162
 
   
