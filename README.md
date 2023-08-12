@@ -5,14 +5,14 @@
 
 Find the number of distinct 3D polycube shapes with the number of cubes equal to 17, and then take it further.
 Challenge explanation: https://www.youtube.com/watch?v=g9n0a0644B4
+
 Link to the currently known numbers related to this: http://kevingong.com/Polyominoes/Enumeration.html
+
 (I'm mostly interested in the numbers that come after 59795121480 or 59,795,121,480)
-(Update: The number for N=17 is 457409613979)
+(Update: The number for N=17 is 457,409,613,979)
+(Update2: Discussions of this project mostly happened in these two links: https://github.com/mikepound/cubes/issues/23 and https://github.com/mikepound/opencubes/issues/27 )
 
-So far, I have an algorithm that doesn't take that much memory and will do the job in about 2 months.
 Thanks to Loïc Damien, datdenkikniet and Joseph Cordell, the algorithm got ported to Rust, and got a speed boost. Loïc Damien's code: https://gitlab.com/dzamlo/polycubes  
-
-I'm currently working on slicing it up into a bunch of pieces, so it could be run by multiple CPUs at the same time.
 
 ## How to Run the program
 ### How to Run on command line (Not recommended for large values of N)
@@ -150,7 +150,6 @@ I didn't implement this :(
 	* If I feel like it, maybe I could find the answer for N=18, but optimistically, that will take 4 months on my machine. Maybe I could hope that someone else does it?
 		(Update: I'm just going to hope... The rust program is really fast. I think the rust version will only takes 9 days on a strong machine)
 
-(Update: Discussions of this project mostly happened in these two links: https://github.com/mikepound/cubes/issues/23 and https://github.com/mikepound/opencubes/issues/27 )
 
 ## Current Plan that hasn't happened yet
 * I might explore an idea I had for an even faster algorithm:
@@ -179,10 +178,10 @@ The problem with finding all the 3D symmetries is that it's trickier for me to i
   
 ### How a slightly more naïve version of it works:  
 The key feature of this algorithm is that it doesn't store the already found polycubes.  
-Instead, it develops the polycubes in a recursive way while making sure the order of the development of cubes could be a valid ordering of a simple deterministic breadth-first-search algorithm.
+Instead, it develops the polycubes in a recursive way while making sure the order of the development of cubes could be a valid ordering of the explored cubes in a simple deterministic breadth-first-search algorithm.
 There's actually a way of iterating through every possible outcome of a simple deterministic breadth-first-search algorithm once, which is very useful for purposes because it means:
-1) We won't double count
-2) We will see every shape because all shapes are accessible by a breadth-first-search algorithm
+1) We won't double count.
+2) We will see every shape because all shapes are accessible by a breadth-first-search algorithm.
 3) Every step in the recursive algorithm only has a few branches available because a lot of them will be impossible because it won't be a valid ordering of a simple deterministic breadth-first-search algorithm.
 
 TODO: diagrams and examples!
@@ -190,11 +189,12 @@ TODO: diagrams and examples!
 Simpler versions of this logic/algorithm can be found in:
 * DFSPolyCubeCounterFixed.java, and
 * DFSPolyCubeCounterFixed2D.java
+
 TODO: I'll have to explain this in more detail.
-I think it's similar to Redelmeier's algo, so if you understand that algorithm, this one won't be so hard to understand. (See: https://en.wikipedia.org/wiki/Polyomino#Algorithms_for_enumeration_of_fixed_polyominoes)
 
+Though the description is different, this algorithm is very similar to Redelmeier's algo, so if you understand that algorithm, this one won't be so hard to understand (and vice-versa). (See: https://en.wikipedia.org/wiki/Polyomino#Algorithms_for_enumeration_of_fixed_polyominoes)
 
-The completely new part of the algo is that once it finds a polycube shape of the desired size, it runs a function that does a 'race' to figure out if the cube and rotation we're using as a starting point for the polycube results is the 'first' time the polycube would be explored by the simple breadth-first-search algorithm. That may sound impossible, but if you only develop the polycubes in a systematic order that covers all the shapes, and not randomly, there's 'only' 24*N different competitors every time you run the 'race'. (24 is the # of symmetries in 3D and N is the number of cubes that could act as a starting point.)  
+The completely new part of the algo is that once it finds a polycube shape of the desired size, it runs a function that does a 'race' to figure out if the cube and rotation we're using as a starting point for the polycube results is the 'first' time the polycube would be explored by this algorithm. That may sound impossible, but if you only develop the polycubes in a systematic order that covers all the shapes, and not randomly, there's 'only' 24*N different competitors every time you run the 'race'. (24 is the # of symmetries in 3D and N is the number of cubes that could act as a starting point.)  
 
 The space usage is small because it doesn't hold previous configs. It's only O(n^3). It could even be lower if I really wanted it to be, but space isn't the issue.
 Unfortunately, the time taken is still exponential.
