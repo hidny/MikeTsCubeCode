@@ -126,7 +126,7 @@ http://kevingong.com/Polyominoes/Enumeration.html
 I didn't implement this :(
 
 
-## Current Plan that already happened
+## Plan that already happened
   
 * Finding the answer to N=17:
 	* If everything goes well, I'll have the answer to N=16 by July 22nd 2023, and I'll hopefully confirm that it matches what Kevin Gong said it would be.  
@@ -172,19 +172,20 @@ The algorithms are different, but they are similar in that they both go through 
 I still haven't figured out which one is faster... it might be that Redelmeier's algo is faster, but mine was run on more powerful hardware and was fast enough to solve for N=17.
 
 It seems like they didn't have the idea of doing the 'race', but I'm starting to think the 'race' idea is slower than just finding all the 3D symmetries and figuring it out.
-The problem with finding all the 3D symmetries is that it's trickier for me to implement and will take me some time to do properly.
+The problem with finding all the 3D symmetries is that it's trickier for me to implement and will take me some time to do actually get it done.
 
   
 ## High-level explanation of the algorithm  
   
 ### How a slightly more naïve version of it works:  
 The key feature of this algorithm is that it doesn't store the already found polycubes.  
-Instead, it develops the polycubes in a recursive way while making sure the order of the development respects a simple deterministic breadth-first-search algorithm. Simpler versions of this logic/algorithm can be found in:
+Instead, it develops the polycubes in a recursive way while making sure the order of the development is a valid order for a simple deterministic breadth-first-search algorithm. Simpler versions of this logic/algorithm can be found in:
 * DFSPolyCubeCounterFixed.java, and
 * DFSPolyCubeCounterFixed2D.java
 TODO: I'll have to explain this in more detail.
+I think it's similar to Redelmeier's algo. (See: https://en.wikipedia.org/wiki/Polyomino#Algorithms_for_enumeration_of_fixed_polyominoes)
 
-Once it finds a polycube shape of the desired size, it runs a function that does a 'race' to figure out if the cube and rotation we're using as a starting point for the polycube results is the 'first' time the polycube would be explored by the simple breadth-first-search algorithm. That may sound impossible, but if you only develop the polycubes in a systematic order that covers all the shapes, and not randomly, there's 'only' 24*N different competitors every time you run the 'race'. (24 is the # of symmetries in 3D and N is the number of cubes that could act as a starting point.)  
+The completely new part of the algo is that once it finds a polycube shape of the desired size, it runs a function that does a 'race' to figure out if the cube and rotation we're using as a starting point for the polycube results is the 'first' time the polycube would be explored by the simple breadth-first-search algorithm. That may sound impossible, but if you only develop the polycubes in a systematic order that covers all the shapes, and not randomly, there's 'only' 24*N different competitors every time you run the 'race'. (24 is the # of symmetries in 3D and N is the number of cubes that could act as a starting point.)  
   
 The space usage is small because it doesn't hold previous configs. It's only O(n^3). It could even be lower if I really wanted it to be, but space isn't the issue.  
 Unfortunately, the time taken is still exponential.
@@ -203,7 +204,7 @@ For every race winner, It took at most O(n) time to build the shape, there's up 
   
 So that's why the time complexity seems to be:  
   
-O( A(n) * N * (N*24) * (n * log(n)) )  
+O( A(n) * O(n) * (N*24) * (n * log(n)) )  
 = O( A(n) * n^3 * log(n))  
 where A(n) is the number of answers as a function of n. 
   
@@ -258,4 +259,6 @@ Therefore, the theorem is true and you could throw away paths that lose the race
 	* Precomputed the 6 orthogonal directions to try in order for all 24 symmetries, so the program doesn't have to recalculate it every single time.
 	* Precomputed a look-up table for the relevant contenders during the 'race'.
 		* This look-up table only works if the root node for all contenders can't be filled up any more, so that's why the condition 'if(numCellsUsedDepth >= NUM_NEIGHBOURS_3D + 1) {' exists.
+		* A tighter bound would be to say that the max_manhantan dist between 2 cubes has to be 3 or more, but that would take more time to calculate for no real benefit in the 3D case.
+		* This tighter bound might be useful once we go up a few dimensions though.
 
