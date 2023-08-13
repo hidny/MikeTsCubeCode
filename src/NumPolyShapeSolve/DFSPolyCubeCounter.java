@@ -16,7 +16,7 @@ public class DFSPolyCubeCounter {
 	
 	//TODO: make it so the user can choose between 2D and 3D (For now, just change the var here)
 	//public static final int NUM_NEIGHBOURS = NUM_ROTATIONS_2D_CHEAT;
-	public static final int NUM_NEIGHBOURS = NUM_NEIGHBOURS_3D;
+	public static final int NUM_NEIGHBOURS = NUM_ROTATIONS_2D_CHEAT;
 	
 	public static final int BORDER_PADDING = 2;
 	
@@ -611,7 +611,7 @@ public class DFSPolyCubeCounter {
 		//1, 1, 1, 2, 8, 29, 166, 1023, 6922, 48311, 346543, 2522522, 18598427, 138462649, 1039496297, 7859514470, 59795121480
 		//(Formerly M1845 N0731)
 		//TODO: handle N=0 and N=1 case...
-		int N = 12;
+		int N = 11;
 		solveCuboidIntersections(N);
 		
 		//So far, I think I could get f(14) in 10 hours...

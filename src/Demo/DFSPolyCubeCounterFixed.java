@@ -253,15 +253,15 @@ public class DFSPolyCubeCounterFixed {
 		System.out.println("Polycube counter program (Fixed):");
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
-		int N = 14;
+		int N = 16;
 		solveCuboidIntersections(N);
 
 		//Fixed solutions for 3D:
 		// https://oeis.org/A001931
 		// 1, 3, 15, 86, 534
 		// 3481, 23502, 120631, 1150122, 8276084
-		// 60494549, 446205905, 3322769321
-		
+		// 60494549, 446205905, 3322769321, 24946773111, 188625900446
+		//                                               
 		
 		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
