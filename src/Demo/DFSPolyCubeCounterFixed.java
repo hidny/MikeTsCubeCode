@@ -260,8 +260,8 @@ public class DFSPolyCubeCounterFixed {
 		// https://oeis.org/A001931
 		// 1, 3, 15, 86, 534
 		// 3481, 23502, 120631, 1150122, 8276084
-		// 60494549, 446205905, 3322769321, 24946773111, 188625900446
-		//                                               
+		// 60494549, 446205905, 3322769321, 24946773111, 188625900446,
+		// 1435074454755                                      
 		
 		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
