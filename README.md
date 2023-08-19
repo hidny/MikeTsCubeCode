@@ -13,7 +13,7 @@ Link to the currently known numbers related to this: http://kevingong.com/Polyom
 (Update: The number for N=17 is 457,409,613,979)
 (Update2: Discussions of this project mostly happened in these two links: https://github.com/mikepound/cubes/issues/23 and https://github.com/mikepound/opencubes/issues/27 )
 
-Thanks to Loïc Damien, datdenkikniet and Joseph Cordell, the algorithm got ported to Rust, and got a speed boost. Loïc Damien's code: https://gitlab.com/dzamlo/polycubes  
+Thanks to Loïc Damien, datdenkikniet and Joseph Cordell, the algorithm got ported to Rust, and got a speed boost. Loïc Damien's code: https://gitlab.com/dzamlo/polycubes2  
 
 ## How to Run the program
 ### How to Run on command line (Not recommended for large values of N)
