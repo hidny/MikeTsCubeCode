@@ -281,10 +281,10 @@ Because the new path pw is case 3, and if there were another path in case 3, (be
 Therefore, the theorem is true and you could throw away paths that lose the race for polycubes of size n without missing any solutions of size n+1.
   
   
-## Lower-level tricks I used:  
+## Lower-level tricks, decisions, and details that I don't want to forget:  
   
-* Tried to reduce memory allocations by having pretty much all the memory declared at the start of the program.
-* Decided to be 'wasteful' with space usage by using a bool array that is N^3 in size instead of using a hashset because that meant not constantly allocating memory...  
+* I tried to reduce memory allocations by having pretty much all the memory declared at the start of the program.
+* I decided to be 'wasteful' with space usage by using a bool array that is N^3 in size instead of using a hashset because that meant not constantly allocating memory...  
 	* N^3 bits for N=40 is only 32000 bits...  
 * Relevant code may be complicated, but it's only around 800 lines.  
 * I tried to reduce branching by suggesting that the compiler do arithmetic instead of branching in the getNeighbourIndex() function, and I think the compiler actually understood!
