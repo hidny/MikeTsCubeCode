@@ -212,18 +212,18 @@ See: https://oeis.org/A000162
 
 For your convenience, I decided to make the following files nearly identical because I would like to give you the option of diffing them to see the difference:
 
+* DFSPolyCubeCounterOptimized3.java
+	* Finds the number of 3D shapes symmetric under 3D rotations, but slower because it's missing a few optimizations
+		* This is the program that I care about the most
+		* https://oeis.org/A000162
 * DFSPolyCubeCounterFixed.java
 	* Finds the number of 3D shapes symmetric under translation
 		* https://oeis.org/A001931
 * DFSPolyCubeCounterFixed2D.java
 	* Finds the number of 2D shapes symmetric under translation
 		* https://oeis.org/A001168
-* DFSPolyCubeCounterOptimized3.java
-	* Finds the number of 3D shapes symmetric under 3D rotations, but slower because it's missing a few optimizations
-		* https://oeis.org/A000162
 * DFSPolyCubeCounter.java
 	* Finds the number of 3D shapes symmetric under 3D rotations
-		* This is the program that I care about the most
 		* https://oeis.org/A000162
 * DFSPolyCubeCounter4DRotationsOptimized.java
 	* Finds the number of 3D shapes symmetric under 4D rotations (i.e. rotations and reflection)
