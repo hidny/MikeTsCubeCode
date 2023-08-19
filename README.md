@@ -219,14 +219,14 @@ For your convenience, I decided to make the following files nearly identical bec
 	* Finds the number of 2D shapes symmetric under translation
 		* https://oeis.org/A001168
 * DFSPolyCubeCounterOptimized3.java
-	* Finds the number of 3D shapes symmetric under 3D rotation, but slower because it's missing a few optimizations
+	* Finds the number of 3D shapes symmetric under 3D rotations, but slower because it's missing a few optimizations
 		* https://oeis.org/A000162
 * DFSPolyCubeCounter.java
-	* Finds the number of 3D shapes symmetric under 3D rotation
+	* Finds the number of 3D shapes symmetric under 3D rotations
 		* This is the program that I care about the most
 		* https://oeis.org/A000162
 * DFSPolyCubeCounter4DRotationsOptimized.java
-	* Finds the number of 3D shapes symmetric under 4D rotation (i.e. rotation and reflection)
+	* Finds the number of 3D shapes symmetric under 4D rotations (i.e. rotations and reflection)
 		* https://oeis.org/A038119
 
   
