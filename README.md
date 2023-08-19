@@ -194,6 +194,22 @@ Simpler versions of this logic/algorithm can be found in:
 * DFSPolyCubeCounterFixed.java, and
 * DFSPolyCubeCounterFixed2D.java
 
+TODO: I'll have to explain this in more detail.
+
+Though the description is different, this algorithm is very similar to Redelmeier's algo, so if you understand that algorithm, this one won't be so hard to understand (and vice-versa). (See: https://en.wikipedia.org/wiki/Polyomino#Algorithms_for_enumeration_of_fixed_polyominoes)
+
+The completely new part of the algo is that once it finds a polycube shape of the desired size, it runs a function that does a 'race' to figure out if the cube and rotation we're using as a starting point for the polycube results is the 'first' time the polycube would be explored by this algorithm. That may sound impossible, but if you only develop the polycubes in a systematic order that covers all the shapes, and not randomly, there's 'only' 24*N different competitors every time you run the 'race'. (24 is the # of symmetries in 3D and N is the number of cubes that could act as a starting point.)  
+
+The space usage is small because it doesn't hold previous configs. It's only O(n^3). It could even be lower if I really wanted it to be, but space isn't the issue.
+Unfortunately, the time taken is still exponential.
+  
+The time it takes is O( A(n) * n^3 * log(n) )  
+where 'A(n)' is the number of answers as a function of n.
+A(n) seems to be an exponential that multiplies by a number between 7 and 9 every time n is increased by 1.
+See: https://oeis.org/A000162
+
+### Sample code to look at
+
 For your convenience, I decided to make the following files nearly identical because I would like to give you the option of diffing them to see the difference:
 
 * DFSPolyCubeCounterFixed.java
@@ -212,20 +228,6 @@ For your convenience, I decided to make the following files nearly identical bec
 * DFSPolyCubeCounter4DRotationsOptimized.java
 	* Finds the number of 3D shapes symmetric under 4D rotation (i.e. rotation and reflection)
 		* https://oeis.org/A038119
-
-TODO: I'll have to explain this in more detail.
-
-Though the description is different, this algorithm is very similar to Redelmeier's algo, so if you understand that algorithm, this one won't be so hard to understand (and vice-versa). (See: https://en.wikipedia.org/wiki/Polyomino#Algorithms_for_enumeration_of_fixed_polyominoes)
-
-The completely new part of the algo is that once it finds a polycube shape of the desired size, it runs a function that does a 'race' to figure out if the cube and rotation we're using as a starting point for the polycube results is the 'first' time the polycube would be explored by this algorithm. That may sound impossible, but if you only develop the polycubes in a systematic order that covers all the shapes, and not randomly, there's 'only' 24*N different competitors every time you run the 'race'. (24 is the # of symmetries in 3D and N is the number of cubes that could act as a starting point.)  
-
-The space usage is small because it doesn't hold previous configs. It's only O(n^3). It could even be lower if I really wanted it to be, but space isn't the issue.
-Unfortunately, the time taken is still exponential.
-  
-The time it takes is O( A(n) * n^3 * log(n) )  
-where 'A(n)' is the number of answers as a function of n.
-A(n) seems to be an exponential that multiplies by a number between 7 and 9 every time n is increased by 1.
-See: https://oeis.org/A000162
 
   
 #### Explanation of the time:  
