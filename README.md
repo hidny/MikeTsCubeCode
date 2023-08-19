@@ -194,6 +194,25 @@ Simpler versions of this logic/algorithm can be found in:
 * DFSPolyCubeCounterFixed.java, and
 * DFSPolyCubeCounterFixed2D.java
 
+For your convenience, I decided to make the following files nearly identical because I would like to give you the option of diffing them to see the difference:
+
+* DFSPolyCubeCounterFixed.java
+	* Finds the number of 3D shapes symmetric under translation
+		* https://oeis.org/A001931
+* DFSPolyCubeCounterFixed2D.java
+	* Finds the number of 2D shapes symmetric under translation
+		* https://oeis.org/A001168
+* DFSPolyCubeCounterOptimized3.java
+	* Finds the number of 3D shapes symmetric under 3D rotation, but slower because it's missing a few optimizations
+		* https://oeis.org/A000162
+* DFSPolyCubeCounter.java
+	* Finds the number of 3D shapes symmetric under 3D rotation
+		* This is the program that I care about the most
+		* https://oeis.org/A000162
+* DFSPolyCubeCounter4DRotationsOptimized.java
+	* Finds the number of 3D shapes symmetric under 4D rotation (i.e. rotation and reflection)
+		* https://oeis.org/A038119
+
 TODO: I'll have to explain this in more detail.
 
 Though the description is different, this algorithm is very similar to Redelmeier's algo, so if you understand that algorithm, this one won't be so hard to understand (and vice-versa). (See: https://en.wikipedia.org/wiki/Polyomino#Algorithms_for_enumeration_of_fixed_polyominoes)
