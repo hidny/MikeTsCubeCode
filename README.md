@@ -13,7 +13,12 @@ Link to the currently known numbers related to this: http://kevingong.com/Polyom
 (Update: The number for N=17 is 457,409,613,979)
 (Update2: Discussions of this project mostly happened in these two links: https://github.com/mikepound/cubes/issues/23 and https://github.com/mikepound/opencubes/issues/27 )
 
-Thanks to Loïc Damien, datdenkikniet and Joseph Cordell, the algorithm got ported to Rust, and got a speed boost. Loïc Damien's code: https://gitlab.com/dzamlo/polycubes2  
+Thanks to Loïc Damien, datdenkikniet and Joseph Cordell, the algorithm got ported to Rust, and got a speed boost. Loïc Damien's code: https://gitlab.com/dzamlo/polycubes2
+
+(Update3: NailLegProcessorDivide (aka Joseph Cordell) was able to solve the N=18 case
+It's 3516009200564 (or 3,516,009,200,564)
+)
+  
 
 ## How to Run the program
 ### How to Run on command line (Not recommended for large values of N)
@@ -149,7 +154,9 @@ I didn't implement this :(
 		
   
 	* If I feel like it, maybe I could find the answer for N=18, but optimistically, that will take 4 months on my machine. Maybe I could hope that someone else does it?
-		(Update: I'm just going to hope... The rust program is really fast. I think the rust version will only takes 9 days on a strong machine)
+
+		(Update1: I'm just going to hope... The rust program is really fast. I think the rust version will only takes 9 days on a strong machine)
+		(Update2: NailLegProcessorDivide (aka Joseph Cordell) was able to solve the N=18 case and only had to run for 5 to 6 days. It's 3,516,009,200,564.)
 
 
 ## Current Plan that hasn't happened yet
@@ -166,6 +173,7 @@ number of rotationally symmetric solutions up till N=19.
 	
 * Reread paper about this and make sure that I didn't reinvent the wheel in a worse way:
 https://www.sciencedirect.com/science/article/pii/S0012365X0900082X
+(Update: I did reinvent the wheel, but the interpretation of the algorithm is different, and the concept of doing the 'race' is new) 
 
 ## Comparison to papers about the subject
 Reading through the wiki page suggests that I reinvented the wheel:
@@ -244,6 +252,9 @@ where A(n) is the number of answers as a function of n.
 
 It's possible that it's actually better than this estimate, but I haven't delved deep into this issue.
 
+(Update: I now think it's 'only' O( A(n) * n^2 * log(n)) because it seems to only take O(1) time to build the shape per solution that exists,
+so the final number gets lowered by a factor of n.)
+ 
   
 ### Explanation of why it's good to throw away non-first polycube shapes  
   
@@ -286,15 +297,15 @@ Therefore, the theorem is true and you could throw away paths that lose the race
 * I tried to reduce memory allocations by having pretty much all the memory declared at the start of the program.
 * I decided to be 'wasteful' with space usage by using a bool array that is N^3 in size instead of using a hashset because that meant not constantly allocating memory...  
 	* N^3 bits for N=40 is only 32000 bits...  
-* Relevant code may be complicated, but it's only around 800 lines.  
+* Relevant code may be complicated, but it's only around 800 lines.
 * I tried to reduce branching by suggesting that the compiler do arithmetic instead of branching in the getNeighbourIndex() function, and I think the compiler actually understood!
 * This probably could be rewritten in C, or assembly for better results. If I were interested in writing C or assembly for optimizations, this would be what I would work on.
 * It got better results when it was ported to Rust. See Loïc Damien's code: https://gitlab.com/dzamlo/polycubes2  , and also see the PR requests for an impressively fast version of the code: https://gitlab.com/dzamlo/polycubes2/-/merge_requests/2 
 * I didn't use a profiler, and I just used my intuition. I wouldn't be surprised if an expert can do much better.
   
-* Tricks to precompute a few things:  
-	* I precomputed the 6 orthogonal directions to try in order for all 24 symmetries, so the program doesn't have to recalculate it every single time.
-	* I precomputed a look-up table for the relevant contenders during the 'race':
+* Tricks to pre-compute a few things:  
+	* I pre-computed the 6 orthogonal directions to try in order for all 24 symmetries, so the program doesn't have to recalculate it every single time.
+	* I pre-computed a look-up table for the relevant contenders during the 'race':
 		* For technical reasons I won't get into here, this look-up table only works if the root node for all contenders can't be filled up any more, so that's why the condition 'if(numCellsUsedDepth >= NUM_NEIGHBOURS_3D + 1) {' exists.
-		* A tighter bound would be to say that the max_manhantan dist between 2 cubes has to be 3 or more, but that would take more time to calculate for no real benefit in the 3D case.
+		* A tighter bound would be to say that the maximum manhanttan distance between 2 cubes has to be 3 or more, but that would take more time to calculate for no real benefit in the 3D case.
 		* This tighter bound might be useful once we go up a few dimensions though.

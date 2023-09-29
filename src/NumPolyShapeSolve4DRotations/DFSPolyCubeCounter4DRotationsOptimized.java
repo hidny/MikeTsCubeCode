@@ -737,7 +737,7 @@ public class DFSPolyCubeCounter4DRotationsOptimized {
 		System.out.println("Polycube counter program where 4D rotations are allowed (i.e. reflections are allowed):");
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 		
-		//This matches this OIES sequence up to at least N=14: https://oeis.org/A038119
+		//This matches this OIES sequence up to at least N=15: https://oeis.org/A038119
 		// I believe that if I wanted to, I could get the value for N-17 if I waited 2 weeks to a month,
 		// but I have bigger fish to fry.
 		
@@ -746,6 +746,7 @@ public class DFSPolyCubeCounter4DRotationsOptimized {
 		
 		enumerateNumberOfPolycubes(N);
 		
+		//For N=15: "Final number of unique solutions: 3934285874" (took 13 hours...)
 
 		System.out.println("Done with N = " + N);
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
